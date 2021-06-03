@@ -58,6 +58,13 @@ async function fetchJson(url, options, onCancel) {
  *  a promise that resolves to a possibly empty array of reservation saved in the database.
  */
 
+// compare to flashcard list
+// export async function listDecks(signal) {
+  //   const url = `${API_BASE_URL}/decks?_embed=cards`;
+  //   return await fetchJson(url, { signal });
+  // }
+  
+  //given api call vvv
 export async function listReservations(params, signal) {
   const url = new URL(`${API_BASE_URL}/reservations`);
   Object.entries(params).forEach(([key, value]) =>
@@ -67,3 +74,40 @@ export async function listReservations(params, signal) {
     .then(formatReservationDate)
     .then(formatReservationTime);
 }
+
+
+
+//from read vvv
+// export async function readDeck(deckId, signal) {
+  //   const url = `${API_BASE_URL}/decks/${deckId}?_embed=cards`;
+  //   return await fetchJson(url, { signal });
+  // }
+  export async function readReservation(reservationId, signal) {
+    const url = `${API_BASE_URL}/reservations/${reservationId}?_embed=cards`;
+    return await fetchJson(url, { signal });
+  }
+
+  //create from flashcards
+
+  // export async function createDeck(deck, signal) {
+  //   const url = `${API_BASE_URL}/decks`;
+  //   const options = {
+  //     method: "POST",
+  //     headers,
+  //     body: JSON.stringify(stripCards(deck)),
+  //     signal,
+  //   };
+  //   return await fetchJson(url, options);
+  // }
+  
+  export async function createReservation(reservationForm, signal) {
+    const url = `${API_BASE_URL}/reservations`;
+    const options = {
+      method: "POST",
+      headers,//shows json is body type
+      body: JSON.stringify({data:reservationForm}),
+      signal,
+    };
+    return await fetchJson(url, options);
+  }
+  

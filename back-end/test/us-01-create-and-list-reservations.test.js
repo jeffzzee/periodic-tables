@@ -123,9 +123,12 @@ describe("US-01 - Create and list reservations", () => {
         .post("/reservations")
         .set("Accept", "application/json")
         .send({ data });
-
+        console.log("\n\n\n\ LASTNAME")
+        console.log(response.body)
       expect(response.body.error).toContain("last_name");
       expect(response.status).toBe(400);
+
+
     });
 
     test("returns 400 if mobilePhone is missing", async () => {
@@ -160,11 +163,13 @@ describe("US-01 - Create and list reservations", () => {
         .post("/reservations")
         .set("Accept", "application/json")
         .send({ data });
-
+        console.log("\n\n\n\ MOBILEPHONE")
+        console.log(response.body)
       expect(response.body.error).toContain("mobile_number");
       expect(response.status).toBe(400);
-    });
 
+    });
+    
     test("returns 400 if reservation_date is missing", async () => {
       const data = {
         first_name: "first",
