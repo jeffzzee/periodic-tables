@@ -38,6 +38,7 @@ describe("US-02 - Create reservations future date", () => {
       expect(response.body.error).toContain("future");
       expect(response.status).toBe(400);
     });
+    console.log("DATE PAST")
     test("returns 400 if reservation_date falls on a tuesday", async () => {
       const data = {
         first_name: "first",
@@ -52,7 +53,7 @@ describe("US-02 - Create reservations future date", () => {
         .post("/reservations")
         .set("Accept", "application/json")
         .send({ data });
-
+      console.log("DATE check TuESDAY")
       expect(response.body.error).toContain("closed");
       expect(response.status).toBe(400);
     });

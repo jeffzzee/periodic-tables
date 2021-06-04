@@ -1,9 +1,10 @@
-import React from "react";
+import React, {useEffect,useState} from "react";
 
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch, useHistory } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
 import NotFound from "./NotFound";
 import { today } from "../utils/date-time";
+import {listReservations} from "../utils/api"
 import useQuery from "../utils/useQuery"
 import ReservationNewComponent from "../Pages/ReservationNewComponent";
 
@@ -16,7 +17,24 @@ import ReservationNewComponent from "../Pages/ReservationNewComponent";
  */
 function Routes() {
   const query = useQuery();
-  const date = query.get("date")
+  const date = query.get("date")?query.get("date"):today();
+  const [reservations, setReservations] = useState([]);
+  const [reservationsError, setReservationsError] = useState(null);
+  const history = useHistory()
+  
+
+
+  
+  useEffect(loadDashboard, [date]);
+
+  function loadDashboard() {
+    const abortController = new AbortController();
+    setReservationsError(null);
+    listReservations({ date }, abortController.signal)
+      .then(setReservations)
+      .catch(setReservationsError);
+    return () => abortController.abort();
+  }
 
 
   return (
@@ -28,10 +46,16 @@ function Routes() {
         <Redirect to={"/dashboard"} />
       </Route>
       <Route exact={true} path="/reservations/new">
-        <ReservationNewComponent/>  
+        <ReservationNewComponent date={date} loadDashboard={loadDashboard}/>  
       </Route>
       <Route path="/dashboard">
-        <Dashboard date={date?date:today()} />
+        <Dashboard 
+        date={date}
+        loadDashboard={loadDashboard} 
+        setReservationsError={setReservationsError}
+        reservationsError={reservationsError} 
+        reservations={reservations}
+       />
       </Route>
       <Route>
         <NotFound />

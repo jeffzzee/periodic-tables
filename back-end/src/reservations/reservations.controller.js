@@ -41,8 +41,7 @@ function emptyCheck(input){
 
 function validFormSubmission(request,response,next){
   const {data={}}=request.body //pulls data or uses empty object
-  const reservationDate = new Date(`
-  ${data.reservation_date}${data.reservation_time}`
+  const reservationDate = new Date(data.reservation_date
   // ${data.reservation_test} GMT-0500
   )
   //check submission existence
@@ -75,6 +74,13 @@ function validFormSubmission(request,response,next){
     });
   }
   
+  if(isReservationPast(data.reservation_date)){
+    return next({
+      status:400,
+      message:"reservation date must be made for the future"
+    })
+  }
+
   if (!/\d{4}-\d{2}-\d{2}/.test(data.reservation_date)) {
     return next({
       status: 400,
@@ -82,21 +88,23 @@ function validFormSubmission(request,response,next){
     });
   }
   if (reservationDate.getDay() === 1) {
+    console.log("tuesday tested")
     return next({
       status: 400,
       message:
-      "Reservations cannot be made on a Tuesday, the restaurant is closed.",
+      "reservation_date cannot be made on a Tuesday, the restaurant is closed.",
     });
   }
   // start = new Date(${data.reservation_date} 10:30:00 GMT-500),
   // end = new Date(${data.reservation_date} 21:30:00 GMT-500);
   
-  if(reservationDate < new Date().getTime()){
-    return next({
-      status:400,
-      message: "reservations must be made for the future"
-    })
-  }
+  // if(reservationDate < new Date().getTime()){
+  //   console.log("future tested")
+  //   return next({
+  //     status:400,
+  //     message: "reservations must be made for the future"
+  //   })
+  // }
   
   if (!/[0-9]{2}:[0-9]{2}/.test(data.reservation_time)) {
     return next({
@@ -140,6 +148,17 @@ function validFormSubmission(request,response,next){
 function timeChecker(time){
   
 }*/
+function isReservationPast(date) {
+  const temp = date.split("-");
+  const newDate = new Date(
+    Number(temp[0]),
+    Number(temp[1]) - 1,
+    Number(temp[2]) + 1
+  );
+  // indexing for the months etc.
+  return newDate.getTime() < new Date().getTime();
+} 
+
 async function create(request,response){
   const newReservationObject={
     first_name:request.body.data.first_name,

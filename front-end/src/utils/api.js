@@ -83,7 +83,7 @@ export async function listReservations(params, signal) {
   //   return await fetchJson(url, { signal });
   // }
   export async function readReservation(reservationId, signal) {
-    const url = `${API_BASE_URL}/reservations/${reservationId}?_embed=cards`;
+    const url = `${API_BASE_URL}/reservations/${reservationId}`//?_embed=cards`;
     return await fetchJson(url, { signal });
   }
 

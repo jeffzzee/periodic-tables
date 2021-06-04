@@ -1,9 +1,11 @@
 import React, {useState} from "react"
 import {Link,useHistory} from "react-router-dom"
 import {createReservation} from "../utils/api"
+import{today} from "../utils/date-time"
+import ErrorAlert from "../layout/ErrorAlert"
 
-function ReservationNewComponent(){
-        const blankForm={
+function ReservationNewComponent({loadDashboard, date}){
+        const blankForm={ //initialized empty form
                 first_name:'',
                 last_name:'',
                 mobile_number:'',
@@ -11,22 +13,54 @@ function ReservationNewComponent(){
                 reservation_time:'',
                 people:0
         }
-        const history=useHistory()
-        const [formState, setFormState]=useState(blankForm)
-    //Some way to use a class constructor? Might be a good exercise which we had not applied in React initially
-async function handleSubmit(event){
-    console.log("submitted")
-    event.preventDefault()
-    const signal=new AbortController().signal
-    //API post
-    const response= await createReservation(formState,signal)
-    //eventually API update
-    console.log (response.data,"response body data")
-        //use edit state for update instead of post?
-        //possibly check response.body.error and set a state if it exists
-        history.push(`/dashboard?date=${formState.reservation_date}`)
+        const history=useHistory() //for links 
+        const [formState, setFormState]=useState(blankForm) //for form values
+        const [errorCollector, setErrorCollector]=useState(null)//for front end validation
+        
+        function dateCheck(){
+                const dateErrors=[] //error holder
+                const todayDateObject=today() //defaults to today
+                const dateObject=new Date(formState.reservation_date) //creates a Date object from argument
+                //use .getDay for index of week's day
+                if (dateObject.getDay()===1){//Tuesday zero indexed is 1 (from Monday=0)
+                //error object w/ message created for Tuesday
+                        dateErrors.push("Reservations cannot be made on Tuesday; the restaurant is closed on Tuesday")
 
+                }
+                if(dateObject < todayDateObject){ //smaller date is earliest
+                        //push error object message for past date reservation submission
+                        dateErrors.push("Reservations must be made on a future date and cannot be made in the past")
+                }
+                if (dateErrors.length===0){ //if error state has NO content return true
+                        return true
+                }
+                else{
+                        setErrorCollector(new Error(dateErrors.toString()));
+                        // setErrorCollector(dateErrors)//place errors objects into state
+                        return false //otherwise return false
+                }
+        }
+
+    //Some way to use a class constructor? Might be a good exercise which we had not applied in React initially
+function handleSubmit(event){
+
+    event.preventDefault() //submission default prevention
+        setErrorCollector(null)
+    const signal=new AbortController().signal //create an abort controller instance signal 
+        //check form's date submission locally on front end first
+        if (dateCheck()){//if no errors then true
+                //API post
+                createReservation(formState,signal) //actual API call via imported Util
+                .then(()=>loadDashboard())
+                .then(()=> history.push(`/dashboard?date=${formState.reservation_date}`))//send user to reservation date URL)
+                .catch(setErrorCollector)
+                //eventually API update
+                // console.log (response.data,"response body data")
+                //use edit state for update instead of post?
+                //possibly check response.body.error and set a state if it exists
+        }
 }
+
 function changeHandler({target}){
         let value=target.value
         if (target.name==="people"){
@@ -37,7 +71,10 @@ function changeHandler({target}){
         setFormState({...formState, [target.name]:value})
 }
     return (
-        <div><form onSubmit= {handleSubmit}>
+
+        <div>
+                <ErrorAlert error={errorCollector}/>
+                <form onSubmit= {handleSubmit}>
         <label htmlFor="first_name">First Name:</label>
         <input
                 name="first_name"
