@@ -16,10 +16,10 @@ function ReservationNewComponent({loadDashboard, date}){
         const history=useHistory() //for links 
         const [formState, setFormState]=useState(blankForm) //for form values
         const [errorCollector, setErrorCollector]=useState(null)//for front end validation
+        const todayDateObject=today() //defaults to today (used in 2 helper functions )
         
         function dateCheck(){
                 const dateErrors=[] //error holder
-                const todayDateObject=today() //defaults to today
                 const dateObject=new Date(formState.reservation_date) //creates a Date object from argument
                 //use .getDay for index of week's day
                 if (dateObject.getDay()===1){//Tuesday zero indexed is 1 (from Monday=0)
@@ -40,6 +40,25 @@ function ReservationNewComponent({loadDashboard, date}){
                         return false //otherwise return false
                 }
         }
+        function timeCheck(){
+                const timeErrors = []
+                console.log(todayDateObject,"the today object from today()")
+                const reserveDateTime=new Date(`${formState.reservation_date}T${formState.reservation_time}:00.000`)//extends the date/time continuum for comparison of past
+                if (reserveDateTime<todayDateObject){
+                        timeErrors.push("reservation must be made on a future date and cannot be made in the past")
+                }
+                if (reserveDateTime.getHours()<10||reserveDateTime.getHours()===10&&reserveDateTime.getMinutes()<30)
+                        timeErrors.push("Reservation must be made for after we are open at 10:30am")
+                if (reserveDateTime.getHours()===21&&reserveDateTime.getMinutes()>30){
+                        timeErrors.push("Reservations must be made an hour before close at 10:30pm")
+                }
+                if (timeErrors.length===0){
+                        return true
+                }else{
+                        setErrorCollector(...errorCollector,...timeErrors)
+                        return false
+                }
+        }
 
     //Some way to use a class constructor? Might be a good exercise which we had not applied in React initially
 function handleSubmit(event){
@@ -50,14 +69,16 @@ function handleSubmit(event){
         //check form's date submission locally on front end first
         if (dateCheck()){//if no errors then true
                 //API post
-                createReservation(formState,signal) //actual API call via imported Util
-                .then(()=>loadDashboard())
-                .then(()=> history.push(`/dashboard?date=${formState.reservation_date}`))//send user to reservation date URL)
-                .catch(setErrorCollector)
+                if(timeCheck()){
+                        createReservation(formState,signal) //actual API call via imported Util
+                        .then(()=>loadDashboard())
+                        .then(()=> history.push(`/dashboard?date=${formState.reservation_date}`))//send user to reservation date URL)
+                        .catch(setErrorCollector)
                 //eventually API update
                 // console.log (response.data,"response body data")
                 //use edit state for update instead of post?
                 //possibly check response.body.error and set a state if it exists
+                }
         }
 }
 

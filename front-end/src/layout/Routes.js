@@ -6,7 +6,8 @@ import NotFound from "./NotFound";
 import { today } from "../utils/date-time";
 import {listReservations} from "../utils/api"
 import useQuery from "../utils/useQuery"
-import ReservationNewComponent from "../Pages/ReservationNewComponent";
+import ReservationNewComponent from "../pages/ReservationNewComponent";
+import SeatingFolk from "../pages/SeatingFolk"
 
 /**
  * Defines all the routes for the application.
@@ -47,6 +48,9 @@ function Routes() {
       </Route>
       <Route exact={true} path="/reservations/new">
         <ReservationNewComponent date={date} loadDashboard={loadDashboard}/>  
+      </Route>
+      <Route path="/reservations/:reservation_id/seat">
+        <SeatingFolk/>
       </Route>
       <Route path="/dashboard">
         <Dashboard 

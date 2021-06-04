@@ -7,6 +7,7 @@ const asyncErrorBoundary= require("../errors/asyncErrorBoundary");
 
 
 
+
 async function resExistsMidWare(request,response,next){
   let foundReservation = ""
   const reservationId = request.params.reservation_id
@@ -24,7 +25,14 @@ async function resExistsMidWare(request,response,next){
   }
 }
 
-
+function asDateString(date) {
+  return `${date.getFullYear().toString(10)}-${(date.getMonth() + 1)
+    .toString(10)
+    .padStart(2, "0")}-${date.getDate().toString(10).padStart(2, "0")}`;
+}
+function today() {
+  return asDateString(new Date());
+}
 
 const fullForm=[
   "first_name","last_name","mobile_number","reservation_date","reservation_time","people"
@@ -105,6 +113,17 @@ function validFormSubmission(request,response,next){
   //     message: "reservations must be made for the future"
   //   })
   // }
+  const now=today()
+  const reserveDateTime=new Date(`${data.reservation_date}T${data.reservation_time}:00.000`)//extends the date/time continuum for comparison of past
+  if (reserveDateTime<now){
+    return next({status:400,message:"reservation_time must be in the future."})
+  }
+  if(reserveDateTime.getHours()===10&&reserveDateTime.getMinutes()<30){
+    return next({status:400,message:"reservation_time must come after our opening time of 10:30am"})
+  }
+  if(reserveDateTime.getHours()===9&&reserveDateTime.getMinutes()>30){
+    return next({status:400,message:"reservation_time must be made an hour before our closing time of 10:30pm"})
+  }
   
   if (!/[0-9]{2}:[0-9]{2}/.test(data.reservation_time)) {
     return next({
