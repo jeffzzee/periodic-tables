@@ -47,15 +47,15 @@ function ReservationNewComponent({loadDashboard, date}){
                 if (reserveDateTime<todayDateObject){
                         timeErrors.push("reservation must be made on a future date and cannot be made in the past")
                 }
-                if (reserveDateTime.getHours()<10||reserveDateTime.getHours()===10&&reserveDateTime.getMinutes()<30)
-                        timeErrors.push("Reservation must be made for after we are open at 10:30am")
-                if (reserveDateTime.getHours()===21&&reserveDateTime.getMinutes()>30){
-                        timeErrors.push("Reservations must be made an hour before close at 10:30pm")
+                if (reserveDateTime.getHours<11 && reserveDateTime.getMinutes()<30)
+                        timeErrors.push("Reservation cannot be made before we are open. We are closed until 10:30AM")
+                if (reserveDateTime.getHours() === 21 && reserveDateTime.getMinutes()>30){
+                        timeErrors.push("Reservations must be made an hour before close at 10:30PM")
                 }
                 if (timeErrors.length===0){
                         return true
                 }else{
-                        setErrorCollector(...errorCollector,...timeErrors)
+                        setErrorCollector(...errorCollector, new Error(timeErrors.toString()))
                         return false
                 }
         }
