@@ -5,6 +5,7 @@
 const service = require("./tables.service");
 const serviceForReservation = require("../reservations/reservations.service")
 const asyncErrorBoundary= require("../errors/asyncErrorBoundary");
+const { table } = require("../db/connection");
 // const reservations = require("../reservations/reservations.controller");
 
 
@@ -277,6 +278,18 @@ async function update(request,response){
   .json({data:tableUpdateData})
 }
 
+function tableOccupied(request,response,next){
+  if(response.locals.table.reservation_id===null){
+    return next({status:400,message:"table is not occupied"})
+  }
+  next()
+}
+async function destroyResId(request,response,next){
+  // const proofOfResRemoval=
+  await service.destroyResId(response.locals.table.table_id)
+  response.sendStatus(204)
+}
+
 // function read(request, response){
 //   const {reservationData}=response.locals
 //   response
@@ -287,6 +300,7 @@ async function update(request,response){
 module.exports = {
   list:asyncErrorBoundary(list),
   create:[validFormSubmission,asyncErrorBoundary(create)],
-  update:[asyncErrorBoundary(tableExists),asyncErrorBoundary(validSeating),asyncErrorBoundary(update)]
+  update:[asyncErrorBoundary(tableExists),asyncErrorBoundary(validSeating),asyncErrorBoundary(update)],
+  destroyResId:[asyncErrorBoundary(tableExists),tableOccupied,asyncErrorBoundary( destroyResId)]
   // read:[asyncErrorBoundary(resExistsMidWare), read]
 }

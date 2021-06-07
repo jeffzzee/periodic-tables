@@ -12,7 +12,7 @@ import TablesDisplay from "../components/TablesDisplay"
  *  the date for which the user wants to view reservations.
  * @returns {JSX.Element}
  */
-function Dashboard({ date, loadDashboard, reservations,
+function Dashboard({ date, loadDashboard, reservations,setNewTableAddState,newTableAddState,
  reservationsError, tables}) {
   const history = useHistory()
 
@@ -43,7 +43,7 @@ function Dashboard({ date, loadDashboard, reservations,
       </div>
       <ErrorAlert error={reservationsError} />
       <ReservationDisplay reservations={reservations}/>
-      <TablesDisplay tables={tables}/>
+      <TablesDisplay tables={tables} setNewTableAddState={setNewTableAddState} newTableAddState={newTableAddState} />
       
 
       <button type="button" onClick={previousClickHandler}>Previous</button>

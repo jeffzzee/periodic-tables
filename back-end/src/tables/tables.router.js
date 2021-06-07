@@ -9,9 +9,14 @@ const methodNotAllowed = require("../errors/methodNotAllowed");
 const controller = require("./tables.controller");
 
 router.route("/:table_id/seat")
-.put(controller.update)
+    .put(controller.update)
 //     .get(controller.read)
+    .delete(controller.destroy)
     .all(methodNotAllowed);
+
+// router.route("/:table_id")
+
+// .all(methodNotAllowed)
 
 router.route("/")
     .get(controller.list)

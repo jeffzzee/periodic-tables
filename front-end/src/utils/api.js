@@ -136,3 +136,10 @@ export async function listTables(params, signal) {
     };
     return await fetchJson(url, options);
   }
+
+  export async function deleteTableResIdDetail(table_id,signal){
+    const url = `${API_BASE_URL}/tables/${table_id}`;
+    const options = { method: "DELETE", signal };
+    return await fetchJson(url, options);
+  }
+  

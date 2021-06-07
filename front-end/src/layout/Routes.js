@@ -80,6 +80,8 @@ function Routes() {
         reservations={reservations}
         tables={tables}
         tablesError ={tablesError }
+        setNewTableAddState={setNewTableAddState}
+        newTableAddState={newTableAddState}
         setTablesError={setTablesError}
        />
       </Route>

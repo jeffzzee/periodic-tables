@@ -29,12 +29,19 @@ function update(newTable){
   .then((updated)=>updated[0])
 
 }
+function proofOfResRemoval(table_id){
+  return db("tables")
+  .where({table_id:table_id})
+  .select(reservation_id)
+  .del(reservation_id)
+}
 
 
 module.exports = {//exports by function name
   create,
   read,
   list,
-  update
+  update,
+  proofOfResRemoval
   // read,
 };
