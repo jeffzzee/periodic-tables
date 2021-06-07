@@ -191,11 +191,14 @@ describe("US-04 - Seat reservation", () => {
       test("returns 400 if data is missing", async () => {
         expect(tableOne).not.toBeUndefined();
 
+        
+
         const response = await request(app)
           .put(`/tables/${tableOne.table_id}/seat`)
           .set("Accept", "application/json")
           .send({ datum: {} });
-
+        console.log("1 PUT DATA MISSING")
+        console.log(response.body)
         expect(response.body.error).toBeDefined();
         expect(response.status).toBe(400);
       });
@@ -208,7 +211,8 @@ describe("US-04 - Seat reservation", () => {
           .put(`/tables/${tableOne.table_id}/seat`)
           .set("Accept", "application/json")
           .send({ data });
-
+        console.log("2 REZ ID MISSING")
+        console.log(response.body)
         expect(response.body.error).toContain("reservation_id");
         expect(response.status).toBe(400);
       });
@@ -224,7 +228,8 @@ describe("US-04 - Seat reservation", () => {
           .put(`/tables/${tableOne.table_id}/seat`)
           .set("Accept", "application/json")
           .send({ data });
-
+          console.log("3 REZ ID DOES NOT EXIST")
+          console.log(response.body)
         expect(response.body.error).toContain("999");
         expect(response.status).toBe(404);
       });
@@ -236,7 +241,8 @@ describe("US-04 - Seat reservation", () => {
           .put(`/tables/${tableOne.table_id}/seat`)
           .set("Accept", "application/json")
           .send({ data: { reservation_id: 1 } });
-
+          console.log("4 200 SUFFICIENT CAPACITY")
+          console.log(response.body)
         expect(response.body.error).toBeUndefined();
         expect(response.status).toBe(200);
       });
@@ -247,7 +253,8 @@ describe("US-04 - Seat reservation", () => {
           .put(`/tables/${barTableOne.table_id}/seat`)
           .set("Accept", "application/json")
           .send({ data: { reservation_id: 1 } });
-
+          console.log("5 INSUFFICIENT CAPACITY")
+          console.log(response.body)
         expect(response.body.error).toContain("capacity");
         expect(response.status).toBe(400);
       });
@@ -260,7 +267,8 @@ describe("US-04 - Seat reservation", () => {
           .put(`/tables/${tableOne.table_id}/seat`)
           .set("Accept", "application/json")
           .send({ data: { reservation_id: 1 } });
-
+          console.log("6 OCCUPIE TO  THE FACE /OCCUPIED")
+          // console.log(response.body)
         expect(occupyResponse.body.error).toBeUndefined();
         expect(occupyResponse.status).toBe(200);
 
@@ -269,7 +277,8 @@ describe("US-04 - Seat reservation", () => {
           .put(`/tables/${tableOne.table_id}/seat`)
           .set("Accept", "application/json")
           .send({ data: { reservation_id: 2 } });
-
+          console.log("7 ASSIGN THE OCCUPIED TABLE ")
+          // console.log(response.body)
         expect(doubleAssignResponse.body.error).toContain("occupied");
         expect(doubleAssignResponse.status).toBe(400);
       });

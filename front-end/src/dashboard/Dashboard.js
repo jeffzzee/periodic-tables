@@ -3,6 +3,8 @@ import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import{previous, today, next} from "../utils/date-time"
 import{useHistory} from "react-router-dom"
+import ReservationDisplay from "../components/ReservationDisplay"
+import TablesDisplay from "../components/TablesDisplay"
 
 /**
  * Defines the dashboard page.
@@ -11,10 +13,10 @@ import{useHistory} from "react-router-dom"
  * @returns {JSX.Element}
  */
 function Dashboard({ date, loadDashboard, reservations,
- reservationsError}) {
+ reservationsError, tables}) {
   const history = useHistory()
 
-  useEffect(loadDashboard, [date]);
+  // useEffect(loadDashboard, [date]);
 
   
   function previousClickHandler(){
@@ -40,8 +42,10 @@ function Dashboard({ date, loadDashboard, reservations,
         <h4 className="mb-0">Reservations for {date}</h4>
       </div>
       <ErrorAlert error={reservationsError} />
+      <ReservationDisplay reservations={reservations}/>
+      <TablesDisplay tables={tables}/>
       
-      {JSON.stringify(reservations)}
+
       <button type="button" onClick={previousClickHandler}>Previous</button>
       <button type="button" onClick={todayClickHandler}>Today</button>
       <button type="button" onClick={nextClickHandler}>Next</button>

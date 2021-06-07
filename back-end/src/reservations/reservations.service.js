@@ -22,8 +22,15 @@ function list(reservation_date) {
     .orderBy("reservation_time", "asc");//order by time ascending
 }
 
+function update(reservationId,newInfo){
+  return db("reservations")
+  .where({reservation_id:reservationId})
+  .update("status",status)
+}
+
 module.exports = {//exports by function name
   create,
   list,
   read,
+  update
 };

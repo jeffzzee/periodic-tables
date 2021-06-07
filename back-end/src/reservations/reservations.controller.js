@@ -203,7 +203,7 @@ async function list(request, response) {
 function read(request, response){
   const {reservationData}=response.locals
   response
-  .status(201)
+  .status(200)
   .json({data:reservationData})
 }
 

@@ -74,6 +74,10 @@ export async function listReservations(params, signal) {
     .then(formatReservationDate)
     .then(formatReservationTime);
 }
+export async function listTables(params, signal) {
+  const url = new URL(`${API_BASE_URL}/tables`);
+  return await fetchJson(url,  {signal}, []  )//what are headers? What is [] doing? Removed to keep only signal. Array dot lenght will be false but [] is truthy
+}
 
 
 
@@ -110,4 +114,25 @@ export async function listReservations(params, signal) {
     };
     return await fetchJson(url, options);
   }
+
+  export async function createTable(tableForm, signal) {
+    const url = `${API_BASE_URL}/tables`;
+    const options = {
+      method: "POST",
+      headers,//shows json is body type
+      body: JSON.stringify({data:tableForm}),
+      signal,
+    };
+    return await fetchJson(url, options);
+  }
   
+  export async function updateTable(updatedTable, signal) {
+    const url = `${API_BASE_URL}/tables/${updatedTable.table_id}/seat`;
+    const options = {
+      method: "PUT",
+      headers,
+      body: JSON.stringify({data:updatedTable}),
+      signal,
+    };
+    return await fetchJson(url, options);
+  }
