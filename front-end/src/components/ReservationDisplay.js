@@ -2,7 +2,8 @@ import React from "react"
 import{Link}from "react-router-dom"
 
 function ReservationDisplay(props){
-    const {reservations}=props
+    const {reservations,reservationRefresh,
+    setReservationRefresh}=props
     const{first_name,last_name,mobile_number,reservation_time,people,status}=reservations
     
     function eachReservation(){
@@ -15,8 +16,8 @@ function ReservationDisplay(props){
             <td>{mobile_number}</td>
             <td>{reservation_time}</td>
             <td>{people}</td>
-            <td>{status}</td>
-            <td><a href={`/reservations/${eachReservation.reservation_id}/seat`}><button type="button">Seat</button></a></td>
+            <td data-reservation-id-status={eachReservation.reservation_id}>{status}</td>
+            {status==="booked"?<td><a href={`/reservations/${eachReservation.reservation_id}/seat`}><button type="button">Seat</button></a></td>:null}
             {/* <td></td> */}
         </tr>)
         })

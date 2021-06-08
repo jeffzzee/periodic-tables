@@ -25,12 +25,13 @@ function Routes() {
   const [tables, setTables]=useState([])
   const [tablesError, setTablesError]=useState(null)
   const [newTableAddState,setNewTableAddState] = useState(0)
+  const [reservationRefresh,setReservationRefresh]=useState(0)
   const history = useHistory()
   
 //reservations come back as an array, so can be mapped
 
   
-  useEffect(loadDashboard, [date]);
+  useEffect(loadDashboard, [date,reservationRefresh]);
 
   function loadDashboard() {
     const abortController = new AbortController();
@@ -69,6 +70,8 @@ function Routes() {
         reservations={reservations}
         newTableAddState={newTableAddState}
         setNewTableAddState={setNewTableAddState}
+        reservationRefresh={reservationRefresh}
+        setReservationRefresh={setReservationRefresh}
         />
       </Route>
       <Route path="/dashboard">
@@ -83,6 +86,8 @@ function Routes() {
         setNewTableAddState={setNewTableAddState}
         newTableAddState={newTableAddState}
         setTablesError={setTablesError}
+        reservationRefresh={reservationRefresh}
+        setReservationRefresh={setReservationRefresh}
        />
       </Route>
       <Route path="/tables/new">

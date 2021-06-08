@@ -274,11 +274,24 @@ async function update(request,response){
     reservation_id:Number(request.body.data.reservation_id),
     // status:"occupied"
   }
+  console.log(updatedTableDetails,"updated table deetails")
   // const resUpdateData = await serviceForReservation.update(response.locals.theUpdatedReservation, "seated")
+  await serviceForReservation.updateStatus(updatedTableDetails.reservation_id,"seated")
   const tableUpdateData=await service.update(updatedTableDetails)
+  console.log(tableUpdateData,"table update data from update")
   response
   .status(200)
   .json({data:tableUpdateData})
+}
+async function occupiedStatus(request,response,next){
+  console.log(response.locals.table,"localtable in occupiedStatus")
+  if(request.body.data.reservation_id){
+  const reservation= await serviceForReservation.read(request.body.data.reservation_id)
+  if(reservation.status==="seated"){
+    return next({status:400,message:"Reservation is already seated"})
+  }
+  }
+  next()
 }
 
 function tableOccupied(request,response,next){
@@ -289,6 +302,9 @@ function tableOccupied(request,response,next){
 }
 async function destroyResId(request,response,next){
   // const proofOfResRemoval=
+  // console.log(request.body.data,"reqbodydata")
+  const reservation_id=response.locals.table.reservation_id
+  await serviceForReservation.updateStatus(reservation_id,"finished")
   const data = await service.destroyResId(Number(response.locals.table.table_id))
   response.status(200).json({data})
 }
@@ -303,7 +319,7 @@ async function destroyResId(request,response,next){
 module.exports = {
   list:asyncErrorBoundary(list),
   create:[validFormSubmission,asyncErrorBoundary(create)],
-  update:[asyncErrorBoundary(tableExists),asyncErrorBoundary(validSeating),asyncErrorBoundary(update)],
+  update:[asyncErrorBoundary(tableExists),asyncErrorBoundary(validSeating),asyncErrorBoundary(  occupiedStatus),asyncErrorBoundary(update)],
   destroyResId:[asyncErrorBoundary(tableExists),tableOccupied,asyncErrorBoundary( destroyResId)]
   // read:[asyncErrorBoundary(resExistsMidWare), read]
 }

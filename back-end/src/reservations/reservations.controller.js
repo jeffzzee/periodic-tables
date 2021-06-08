@@ -207,8 +207,61 @@ function read(request, response){
   .json({data:reservationData})
 }
 
+const realStatus=["booked","finished","cancelled","seated"]
+
+function statusCheck(request,response,next){
+  console.log("status check",request.body.data)
+  if(!request.body.data.status){
+    return next({status:400,message:"no status defined"})
+  }
+  const {status}=request.body.data
+  response.locals.status=status
+  console.log("status check in update",status)
+  if(!realStatus.includes(status)){
+    return next({status:400,message:`${status} is unknown. It must be booked, seated, cancelled or finished`})
+  }
+  
+  next()
+
+}
+function notFinished(request,response,next){
+  if(response.locals.reservationData.status==="finished"){
+  console.log("failed on not finished",response.locals)
+ return next({status:400,message:"The reservation is already finished"})
+}
+  return next()
+
+
+}
+function statusCreateCheck(request,response,next){
+//   if(!request.body.data.status){
+// return next({status:400,message:"no status defined"})}
+const {status}=request.body.data
+// console.log("status check",status)
+if(status&&status!=="booked"){
+  return next({status:400,message:"Status must be booked, seated, cancelled or finished"})
+}
+next()
+}
+
+
+async function updateStatus(request,response,next){
+  // console.log(updatedStatus,"updated status from knex service")
+  const {status="booked"}=request.body.data
+  const reservationID=request.params.reservation_id
+  const updatedStatus= await service.updateResStatus(reservationID,status)
+  console.log("XXXXXX",updatedStatus)
+  response
+  .status(200)
+  .json({data:updatedStatus})
+
+}
+
 module.exports = {
   list:asyncErrorBoundary(list),
-  create:[validFormSubmission,asyncErrorBoundary(create)],
-  read:[asyncErrorBoundary(resExistsMidWare), read]
+  create:[validFormSubmission,
+    statusCreateCheck,
+    asyncErrorBoundary(create)],
+  read:[asyncErrorBoundary(resExistsMidWare), read],
+  updateStatus:[asyncErrorBoundary(resExistsMidWare),statusCheck, notFinished, asyncErrorBoundary(updateStatus)]
 };

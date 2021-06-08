@@ -3,21 +3,27 @@ import{Link}from "react-router-dom"
 import {deleteTableResIdDetail} from "../utils/api"
 
 function TablesDisplay(props){
-    const {tables,setNewTableAddState,newTableAddState}=props
+    const {tables,setNewTableAddState,newTableAddState,reservationRefresh,setReservationRefresh}=props
 
     function finishClick(event){
         console.log("finish clicked")
 
             // event.preventDefault();
+
             let ID = Number(event.target.getAttribute("data-table-id-finish"))
-            console.log(ID,"id")
-            const abortController=new AbortController()
-            const signal =abortController.signal
-            if (window.confirm("Is this table ready to seat new guests? This cannot be undone")) {
-                deleteTableResIdDetail(ID,signal)
-                    .then((x) => { setNewTableAddState(newTableAddState + 1) })
-                    
-                return ()=>abortController.abort()
+            let resID=Number(event.target.getAttribute("data-res-id-finish"))
+            // console.log(ID,"id")
+            // event.preventDefault() //unnecessary in this click (not a submit)
+        // setErrorCollector(null)
+        const abortController=new AbortController()
+        const signal =abortController.signal
+        if (window.confirm("Is this table ready to seat new guests? This cannot be undone")) {
+            deleteTableResIdDetail(ID,resID,signal)
+            .then((x) => { setNewTableAddState(newTableAddState + 1) })//initiate tables refresh
+            .then((x) => { setReservationRefresh(reservationRefresh + 1) })//initiate res refresh
+            // .catch(setErrorCollector)//not necessary because not displaying errors?
+            
+                return ()=>abortController.abort()//cleanup
             }
 
 
@@ -32,7 +38,7 @@ function TablesDisplay(props){
             <td>{table_name}</td>
             <td>{capacity}</td>
             <td data-table-id-status={table_id}>{eachTable.reservation_id?"Occupied":"Free"}</td>
-            <td>{!eachTable.reservation_id?null:<button type="button" data-table-id-finish={eachTable.table_id} onClick={finishClick}>Finish</button>}</td>
+            <td>{!eachTable.reservation_id?null:<button type="button" data-res-id-finish={eachTable.reservation_id} data-table-id-finish={eachTable.table_id} onClick={finishClick}>Finish</button>}</td>
             {/* <td>{people}</td> */}
             {/* <td>{status}</td> */}
             {/* <td><Link to={`/reservations/${eachReservation.reservation_id}/seat`}><button type="button">Seat</button></Link></td> */}

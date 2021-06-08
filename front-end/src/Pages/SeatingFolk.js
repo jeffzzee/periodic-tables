@@ -6,7 +6,8 @@ import {updateTable,listTables,readReservation} from "../utils/api"
 import ErrorAlert from "../layout/ErrorAlert"
 
 function SeatingFolk(props){
-    const {newTableAddState,setNewTableAddState,tables, 
+    const {newTableAddState,setNewTableAddState,tables, reservationRefresh,
+    setReservationRefresh
         // reservations
     }=props //destructured props
     const history=useHistory()//for history manipulation
@@ -96,6 +97,7 @@ function SeatingFolk(props){
     function seatingFunction(event){
         event.preventDefault()
         setErrorCollector(null)
+
         const signal=new AbortController().signal
         //add reservation on
         
@@ -109,6 +111,7 @@ function SeatingFolk(props){
         // .then(()=>loadDashboard())
         .then(()=>setNewTableAddState(newTableAddState+1))
         .then((x)=>setTableID("Select a table"))
+        .then((x)=>setReservationRefresh(reservationRefresh+1))
         .then(()=>history.push("/dashboard"))
         .catch(setErrorCollector)
         }

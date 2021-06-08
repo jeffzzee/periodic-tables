@@ -139,11 +139,22 @@ export async function listTables(params, signal) {
     return await fetchJson(url, options);
   }
 
-  export async function deleteTableResIdDetail(table,signal){
+  export async function deleteTableResIdDetail(table,reservation,signal){
     const url = `${API_BASE_URL}/tables/${table}/seat`;
-    const options = { method: "DELETE", signal };
+    const options = { 
+      method: "DELETE",
+      // headers,
+      // body:JSON.stringify({data:{reservation_id:reservation}}), 
+      signal 
+    };
     console.log(table)
     console.log(url,"url delete resid fetch api")
     return await fetchJson(url, options);
+  }
+
+  export async function reservationStatusUpdate(reservationID,updateObject,signal){
+    const url= `${API_BASE_URL}/reservations/${reservationID}/status`
+    const options={method:"put",reservation_id:reservationID,status:updateObject.status}
+    return await fetchJson(url,options)
   }
   

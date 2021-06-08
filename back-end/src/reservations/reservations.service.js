@@ -19,18 +19,35 @@ function list(reservation_date) {
   return db("reservations")
     .select("*")//select all
     .where({ reservation_date })//find by date in table
+    .whereNot("status","finished")//check that status is not finished
     .orderBy("reservation_time", "asc");//order by time ascending
 }
 
 function update(reservationId,newInfo){
   return db("reservations")
   .where({reservation_id:reservationId})
-  .update("status",status)
+  .update("status",newInfo)
+}
+
+function updateStatus(reservationId,newStatus){
+  return db("reservations")
+  .where({reservation_id:reservationId})
+  .update("status",newStatus)
+  .then((updated)=>update[0])
+}
+function updateResStatus(reservationId,newStatus){
+  return db("reservations")
+  .where({reservation_id:reservationId})
+  .update("status",newStatus)
+  .returning("*")
+  .then ((x)=>x[0])
 }
 
 module.exports = {//exports by function name
   create,
   list,
   read,
-  update
+  update,
+  updateStatus,
+  updateResStatus
 };

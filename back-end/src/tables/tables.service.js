@@ -38,12 +38,15 @@ function destroyResId(table_id){
 }
 
 
+
+
 module.exports = {//exports by function name
   create,
   read,
   list,
   update,
   // proofOfResRemoval
-  destroyResId
+  destroyResId,
+
   // read,
 };
