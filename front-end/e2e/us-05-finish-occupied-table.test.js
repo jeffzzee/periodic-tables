@@ -40,13 +40,12 @@ describe("US-05 - Finish an occupied table - E2E", () => {
         reservation_time: "13:45",
         people: 4,
       });
-
+      console.log(reservation,"reservation from API")
       table = await createTable({
         table_name: `#${Date.now().toString(10)}`,
         capacity: 99,
         reservation_id: reservation.reservation_id,
       });
-
       page = await browser.newPage();
       page.on("console", onPageConsole);
       await page.setViewport({ width: 1920, height: 1080 });
@@ -55,13 +54,14 @@ describe("US-05 - Finish an occupied table - E2E", () => {
       });
       await page.reload({ waitUntil: "networkidle0" });
     });
-
+    
     test("clicking finish button and then clicking OK makes that table available", async () => {
       await page.screenshot({
         path: ".screenshots/us-05-dashboard-finish-button-before.png",
         fullPage: true,
       });
-
+      console.log(table,"table")
+      
       const containsOccupied = await containsText(
         page,
         `[data-table-id-status="${table.table_id}"]`,

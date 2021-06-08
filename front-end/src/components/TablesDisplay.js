@@ -8,13 +8,18 @@ function TablesDisplay(props){
     function finishClick(event){
         console.log("finish clicked")
 
-            event.preventDefault();//probably not necessary if not a submit button
-            let ID = event.target.getAttribute("data-table-id-finish")
-
+            // event.preventDefault();
+            let ID = Number(event.target.getAttribute("data-table-id-finish"))
+            console.log(ID,"id")
+            const abortController=new AbortController()
+            const signal =abortController.signal
             if (window.confirm("Is this table ready to seat new guests? This cannot be undone")) {
-                deleteTableResIdDetail(ID)
+                deleteTableResIdDetail(ID,signal)
                     .then((x) => { setNewTableAddState(newTableAddState + 1) })
+                    
+                return ()=>abortController.abort()
             }
+
 
         }
     
@@ -27,7 +32,7 @@ function TablesDisplay(props){
             <td>{table_name}</td>
             <td>{capacity}</td>
             <td data-table-id-status={table_id}>{eachTable.reservation_id?"Occupied":"Free"}</td>
-            <td>{!eachTable.reservation_id?null:<button type="button" data-table-id-finish={eachTable.table_id} onClick={finishClick()}>Finish</button>}</td>
+            <td>{!eachTable.reservation_id?null:<button type="button" data-table-id-finish={eachTable.table_id} onClick={finishClick}>Finish</button>}</td>
             {/* <td>{people}</td> */}
             {/* <td>{status}</td> */}
             {/* <td><Link to={`/reservations/${eachReservation.reservation_id}/seat`}><button type="button">Seat</button></Link></td> */}

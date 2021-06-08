@@ -190,10 +190,13 @@ function timeChecker(time){
 // } 
 
 async function create(request,response){
+  const{reservation_id=null, table_name, capacity}=request.body.data
   const newTableObject={
-    table_name:request.body.data.table_name,
-    capacity:request.body.data.capacity
+    table_name:table_name,
+    capacity:capacity,
+    reservation_id:reservation_id
   } 
+  console.log("requestbodydata",request.body.data)
   const newTableSuccess = await service.create(newTableObject);
   response
   .status(201)
@@ -286,8 +289,8 @@ function tableOccupied(request,response,next){
 }
 async function destroyResId(request,response,next){
   // const proofOfResRemoval=
-  await service.destroyResId(response.locals.table.table_id)
-  response.sendStatus(204)
+  const data = await service.destroyResId(Number(response.locals.table.table_id))
+  response.status(200).json({data})
 }
 
 // function read(request, response){

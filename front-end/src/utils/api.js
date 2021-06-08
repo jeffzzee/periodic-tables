@@ -106,6 +106,7 @@ export async function listTables(params, signal) {
   
   export async function createReservation(reservationForm, signal) {
     const url = `${API_BASE_URL}/reservations`;
+    console.log("create reservation reached")
     const options = {
       method: "POST",
       headers,//shows json is body type
@@ -123,23 +124,26 @@ export async function listTables(params, signal) {
       body: JSON.stringify({data:tableForm}),
       signal,
     };
+    console.log(tableForm,"tableForm")
     return await fetchJson(url, options);
   }
   
-  export async function updateTable(updatedTable, signal) {
-    const url = `${API_BASE_URL}/tables/${updatedTable.table_id}/seat`;
+  export async function updateTable(updatedTable,reservation_id, signal) {
+    const url = `${API_BASE_URL}/tables/${updatedTable}/seat`;
     const options = {
       method: "PUT",
       headers,
-      body: JSON.stringify({data:updatedTable}),
+      body: JSON.stringify({ data: { reservation_id } }),
       signal,
     };
     return await fetchJson(url, options);
   }
 
-  export async function deleteTableResIdDetail(table_id,signal){
-    const url = `${API_BASE_URL}/tables/${table_id}`;
+  export async function deleteTableResIdDetail(table,signal){
+    const url = `${API_BASE_URL}/tables/${table}/seat`;
     const options = { method: "DELETE", signal };
+    console.log(table)
+    console.log(url,"url delete resid fetch api")
     return await fetchJson(url, options);
   }
   

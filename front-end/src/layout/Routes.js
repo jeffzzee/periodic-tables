@@ -41,7 +41,7 @@ function Routes() {
     return () => abortController.abort();
   }
 
-  useEffect(loadTables,[newTableAddState])
+  useEffect(loadTables,[newTableAddState,date])
 
   function loadTables(){
     const abortController = new AbortController();

@@ -29,11 +29,12 @@ function update(newTable){
   .then((updated)=>updated[0])
 
 }
-function proofOfResRemoval(table_id){
+// function proofOfResRemoval
+function destroyResId(table_id){
   return db("tables")
   .where({table_id:table_id})
-  .select(reservation_id)
-  .del(reservation_id)
+  .update("reservation_id",null)
+  .then((updated)=>updated[0])
 }
 
 
@@ -42,6 +43,7 @@ module.exports = {//exports by function name
   read,
   list,
   update,
-  proofOfResRemoval
+  // proofOfResRemoval
+  destroyResId
   // read,
 };
