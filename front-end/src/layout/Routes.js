@@ -8,6 +8,7 @@ import {listReservations,listTables} from "../utils/api"
 import useQuery from "../utils/useQuery"
 import ReservationNewComponent from "../pages/ReservationNewComponent";
 import SeatingFolk from "../pages/SeatingFolk"
+import SearchTables from "../pages/Search"
 import TableNew from "../pages/TableNew"
 
 /**
@@ -73,6 +74,11 @@ function Routes() {
         reservationRefresh={reservationRefresh}
         setReservationRefresh={setReservationRefresh}
         />
+      </Route>
+      <Route path="/search">
+        <SearchTables reservations={reservations}/>
+
+
       </Route>
       <Route path="/dashboard">
         <Dashboard 

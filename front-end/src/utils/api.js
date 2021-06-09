@@ -79,6 +79,13 @@ export async function listTables(params, signal) {
   return await fetchJson(url,  {signal}, []  )//what are headers? What is [] doing? Removed to keep only signal. Array dot lenght will be false but [] is truthy
 }
 
+export async function listSpecTables(params, signal) {
+  const url = new URL(`${API_BASE_URL}/reservations`);
+  Object.entries(params).forEach(([key,value])=>
+    url.searchParams.append(key, value.toString())
+  )
+  return await fetchJson(url,  {headers, signal}, []  )//what are headers? What is [] doing? Removed to keep only signal. Array dot lenght will be false but [] is truthy
+}
 
 
 //from read vvv

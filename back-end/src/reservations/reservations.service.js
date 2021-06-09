@@ -15,13 +15,26 @@ function read(reservation_id) {
 }
 
 //list
-function list(reservation_date) {
+function list(input) {
+  const keys =Object.entries(input)
+
   return db("reservations")
     .select("*")//select all
-    .where({ reservation_date })//find by date in table
+    .where({ [keys[0]]:keys[1] })//find by date in table
     .whereNot("status","finished")//check that status is not finished
     .orderBy("reservation_time", "asc");//order by time ascending
 }
+
+//working before manipulation to incorporate mobile_phone
+//if the above doesn't work, just create a new list function... you're sending a second api type anyway 
+// function list(reservation_date) {
+  
+//   return db("reservations")
+//     .select("*")//select all
+//     .where({ reservation_date })//find by date in table
+//     .whereNot("status","finished")//check that status is not finished
+//     .orderBy("reservation_time", "asc");//order by time ascending
+// }
 
 function update(reservationId,newInfo){
   return db("reservations")

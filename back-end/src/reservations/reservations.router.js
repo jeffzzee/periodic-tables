@@ -15,6 +15,8 @@ router.route("/:reservation_id/status")
 router.route("/:reservation_id")
     .get(controller.read)
     .all(methodNotAllowed);
+
+// router.route"/:query" //likely as a param, the phone number can be searched just like date was...
     
 
 router.route("/")

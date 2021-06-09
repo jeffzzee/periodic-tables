@@ -194,11 +194,29 @@ async function create(request,response){
 }
 
 async function list(request, response) {
-  const date=request.query.date
-  const reservationsThisDate = await service.list(date)
-  response.json({data:reservationsThisDate
+  if(request.query.date){
+    const date=request.query.date
+    const reservationsThisDate = await service.list(date)
+    response
+    .json({data:reservationsThisDate
+    });
+  }else if(request.query.mobile_phone)
+  const mobile_phone=request.query.mobile_phone
+  const reservationsThisPhone = await service.list(mobile_phone)
+  response
+  .json({data:reservationsThisPhone
   });
 }
+
+
+//uncorrupted prior to phone number query merge
+// async function list(request, response) {
+//   const date=request.query.date
+//   const reservationsThisDate = await service.list(date)
+//   response.json({data:reservationsThisDate
+//   });
+// }
+
 
 function read(request, response){
   const {reservationData}=response.locals
