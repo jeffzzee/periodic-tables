@@ -193,30 +193,33 @@ async function create(request,response){
   .json({data: newReservationSuccess})
 }
 
-async function list(request, response) {
-  console.log("made it to the reservation controller...")
-  if(request.query.date){
-    const date=request.query.date
-    const reservationsThisDate = await service.list({date})
-    response
-    .json({data:reservationsThisDate
-    });
-  }else if(request.query.mobile_phone)
-  const mobile_number=request.query.mobile_number
-  const reservationsThisPhone = await service.list({mobile_number})
-  response
-  .json({data:reservationsThisPhone
-  });
-}
+// async function list(request, response) {
+//   console.log("made it to the reservation controller...")
+//   if(request.query.date){
+//     const date=request.query.date
+//     const reservationsThisDate = await service.list({date})
+//     response
+//     .json({data:reservationsThisDate
+//     });
+//   }else if(request.query.mobile_phone)
+//   const mobile_number=request.query.mobile_number
+//   const reservationsThisPhone = await service.list({mobile_number})
+//   response
+//   .json({data:reservationsThisPhone
+//   });
+// }
 
 
 //uncorrupted prior to phone number query merge
-// async function list(request, response) {
-//   const date=request.query.date
-//   const reservationsThisDate = await service.list(date)
-//   response.json({data:reservationsThisDate
-//   });
-// }
+async function list(request, response) {
+  console.log(request.query.date,request.query.mobile_number)
+  const date=request.query.date
+  const mobile_number=request.query.mobile_number
+
+  const reservationsThisQuery = await service.list(date, mobile_number)
+  response.json({data:reservationsThisQuery
+  });
+}
 
 
 function read(request, response){

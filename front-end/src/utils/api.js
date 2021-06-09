@@ -66,10 +66,13 @@ async function fetchJson(url, options, onCancel) {
   
   //given api call vvv
 export async function listReservations(params, signal) {
+  console.log("listReservations reached")
+  console.log("params in api",params)
   const url = new URL(`${API_BASE_URL}/reservations`);
   Object.entries(params).forEach(([key, value]) =>
     url.searchParams.append(key, value.toString())
   );
+  console.log("url",url.toString())
   return await fetchJson(url, { headers, signal }, [])
     .then(formatReservationDate)
     .then(formatReservationTime);
@@ -84,6 +87,7 @@ export async function listSpecReservations(params, signal) {
   Object.entries(params).forEach(([key,value])=>
     url.searchParams.append(key, value.toString())
   )
+  console.log("url",url.toString())
   return await fetchJson(url,  {headers, signal}, []  )//what are headers? What is [] doing? Removed to keep only signal. Array dot lenght will be false but [] is truthy
 }
 

@@ -2,7 +2,6 @@ import React, { useEffect,useState } from "react"
 import {listSpecReservations} from "../utils/api"
 import {useParams,useHistory,Link} from "react-router-dom"
 import ErrorAlert from "../layout/ErrorAlert"
-import SearchForm from "./SearchForm"
 
 function SearchTables(props){
 const{
@@ -27,10 +26,10 @@ function searchTableGetter(event){
     const signal=abortController.signal
     console.log("abortcontrollersetupreached")
     setSearchErrors(null)
-    listSpecReservations({mobile_number:phoneNumberSearching},signal)
+    listSpecReservations({mobile_phone:phoneNumberSearching},signal)
         .then(setSearchedReservations)
-        .then((x)=>setNewTableAddState(newTableAddState+1))
-        .then(()=>console.log("we got here",searchedReservations))
+        // .then((x)=>setNewTableAddState(newTableAddState+1))
+        .then(()=>console.log("we got here"))
         .catch(setSearchErrors)
         // .catch((error)=>console.log(error))
 
@@ -94,12 +93,32 @@ function eachFoundReservation(){
             </table>
         )
     }
-    return(
-        <div>
-            <h4>No reservations found</h4>
-        </div>)
 }
 
+
+function formChangeHandler({target}){
+    const value=target.value
+    console.log(value,"value from form")
+    setPhoneNumberSearching(value)
+}
+
+function SearchForm({phoneNumberSearching,setPhoneNumberSearching}){
+    return(
+        <form onSubmit={searchTableGetter}>
+            <label htmlFor="mobile_number">Phone number to find</label>
+            <input 
+            name="mobile_number"
+            id="mobile_number"
+            type="input" 
+            placeholder="XXX-XXX-XXXX"
+            value={phoneNumberSearching}
+            onChange={formChangeHandler}
+            required
+            />
+            <button type="submit" >Submit</button>
+        </form>
+    )
+}
 
 // if(!reservations){
 // return (<div>
@@ -124,8 +143,7 @@ return (
         <div>
             <ErrorAlert error={searchErrors}/>
             <SearchForm 
-            phoneNumberSearching={phoneNumberSearching}
-            searchTableGetter={searchTableGetter}
+            phoneNumberSearching={phoneNumberSearching},
             setPhoneNumberSearching={setPhoneNumberSearching}/>
             {eachFoundReservation()}
         </div>

@@ -15,26 +15,39 @@ function read(reservation_id) {
 }
 
 //list
-function list(input) {
-  const keys =Object.entries(input)
-  console.log("keys",keys)
-  return db("reservations")
-    .select("*")//select all
-    .where({ [keys[0]]:keys[1] })//find by date in table
-    .whereNot("status","finished")//check that status is not finished
-    .orderBy("reservation_time", "asc");//order by time ascending
-}
-
-//working before manipulation to incorporate mobile_phone
-//if the above doesn't work, just create a new list function... you're sending a second api type anyway 
-// function list(reservation_date) {
-  
+// function list(input) {
+//   const keys =Object.entries(input)
+//   console.log("keys",keys)
 //   return db("reservations")
 //     .select("*")//select all
-//     .where({ reservation_date })//find by date in table
+//     .where({ [keys[0]]:keys[1] })//find by date in table
 //     .whereNot("status","finished")//check that status is not finished
 //     .orderBy("reservation_time", "asc");//order by time ascending
 // }
+
+//working before manipulation to incorporate mobile_phone
+//if the above doesn't work, just create a new list function... you're sending a second api type anyway 
+function list(reservation_date,mobile_number) {
+  
+  // console.log("object in list",reservation_date)
+  if(reservation_date){
+  return db("reservations")
+    .select("*")//select all
+    .where({ reservation_date })//find by date in table
+    .whereNot("status","finished")//check that status is not finished
+    .orderBy("reservation_time", "asc");//order by time ascending
+  }
+  if(mobile_number){
+    return db("reservations")
+    // .select("*")//select all probably not necessary
+    .whereRaw(
+      "translate(mobile_number, '() -', '') like ?",
+      `%${mobile_number.replace(/\D/g, "")}%`
+    )
+    .whereNot("status","finished")//check that status is not finished
+    .orderBy("reservation_date");//order by time ascending
+  }
+}
 
 function update(reservationId,newInfo){
   return db("reservations")

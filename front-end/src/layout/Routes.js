@@ -76,9 +76,12 @@ function Routes() {
         />
       </Route>
       <Route path="/search">
-        {/* <SearchTables 
-        reservations={reservations}
-        /> */}
+        <SearchTables 
+        // reservations={reservations}
+        newTableAddState={newTableAddState}
+        setNewTableAddState={setNewTableAddState}
+        />
+        {/* hello world */}
 
 
       </Route>
