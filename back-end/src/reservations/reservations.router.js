@@ -24,4 +24,5 @@ router.route("/")
     .post(controller.create)
     .all(methodNotAllowed)
 
+    
 module.exports = router;
