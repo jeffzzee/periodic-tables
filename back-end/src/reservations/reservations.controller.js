@@ -194,6 +194,7 @@ async function create(request,response){
 }
 
 async function list(request, response) {
+  console.log("made it to the reservation controller...")
   if(request.query.date){
     const date=request.query.date
     const reservationsThisDate = await service.list({date})

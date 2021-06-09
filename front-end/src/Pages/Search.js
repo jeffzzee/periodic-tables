@@ -7,14 +7,14 @@ function SearchTables(props){
 const{reservations}=props
 
 const [searchedReservations,setSearchedTables]=useState(null)
-const [phoneNumberSearching,setPhoneNumberSearching]=useState(null)
+const [phoneNumberSearching,setPhoneNumberSearching]=useState(0)
 const [searchErrors,setSearchErrors]=useState(null)
 const history=useHistory()
 
 
 useEffect(searchTableGetter,phoneNumberSearching)
 function searchTableGetter(){
-if(phoneNumberSearching!==null){
+if(phoneNumberSearching!==0){
     const abortController=new AbortController()
     const signal=abortController.signal
     setSearchErrors(null)

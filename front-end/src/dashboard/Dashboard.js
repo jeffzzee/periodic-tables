@@ -43,16 +43,14 @@ function Dashboard({ date, loadDashboard,reservationRefresh,
         <h4 className="mb-0">Reservations for {date}</h4>
       </div>
       <ErrorAlert error={reservationsError} />
-      <ReservationDisplay 
-      reservations={reservations}
+      <ReservationDisplay reservations={reservations}
       reservationRefresh={reservationRefresh}
       setReservationRefresh={setReservationRefresh}
       />
       <TablesDisplay
        reservationRefresh={reservationRefresh}
        setReservationRefresh={setReservationRefresh}
-       tables={tables} setNewTableAddState={setNewTableAddState} newTableAddState={newTableAddState} 
-       />
+       tables={tables} setNewTableAddState={setNewTableAddState} newTableAddState={newTableAddState} />
       
 
       <button type="button" onClick={previousClickHandler}>Previous</button>

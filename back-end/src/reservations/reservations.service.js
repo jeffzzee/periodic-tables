@@ -17,10 +17,10 @@ function read(reservation_id) {
 //list
 function list(input) {
   const keys =Object.entries(input)
-
+  console.log("keys",keys)
   return db("reservations")
     .select("*")//select all
-    .where({ input })//find by date in table
+    .where({ [keys[0]]:keys[1] })//find by date in table
     .whereNot("status","finished")//check that status is not finished
     .orderBy("reservation_time", "asc");//order by time ascending
 }
