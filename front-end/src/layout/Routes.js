@@ -76,7 +76,9 @@ function Routes() {
         />
       </Route>
       <Route path="/search">
-        <SearchTables reservations={reservations}/>
+        {/* <SearchTables 
+        reservations={reservations}
+        /> */}
 
 
       </Route>

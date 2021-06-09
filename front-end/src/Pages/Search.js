@@ -1,21 +1,31 @@
 import React, { useEffect,useState } from "react"
-import {listSpecTables} from "../utils/api"
-import {useParams,useHistory} from "react-router-dom"
+import {listSpecReservations} from "../utils/api"
+import {useParams,useHistory,Link} from "react-router-dom"
+import ErrorAlert from "../layout/ErrorAlert"
 
-function SearchTables(){
-const [searchReservations,setSearchedTables]=useState(null)
+function SearchTables(props){
+const{reservations}=props
+
+const [searchedReservations,setSearchedTables]=useState(null)
 const [phoneNumberSearching,setPhoneNumberSearching]=useState(null)
+const [searchErrors,setSearchErrors]=useState(null)
 const history=useHistory()
 
 
-useEffect(searchTableGetter,numberSearched)
+useEffect(searchTableGetter,phoneNumberSearching)
 function searchTableGetter(){
-    const phone = 
-    setSearchedTables= await listSpecTables(phone)
-
+if(phoneNumberSearching!==null){
+    const abortController=new AbortController()
+    const signal=abortController.signal
+    setSearchErrors(null)
+    listSpecReservations({mobile_phone:phoneNumberSearching},signal)
+        .then(setSearchedTables)
 }
-function handleChange
+// function handleChange(event){
+//     event.preventDefault()
 
+// }
+}
 
 function eachFoundReservation(){
     return searchedReservations.map((eachReservation)=>{
@@ -34,18 +44,53 @@ function eachFoundReservation(){
         })
 }
 
+function formChangeHandler({target}){
+    const value=target.value
+    setPhoneNumberSearching(value)
+}
 
+function SearchForm(){
+    return(
+        <form onSubmit={searchTableGetter}>
+            <label htmlFor="phone_number">Phone Number</label>
+            <input 
+            name="phone_number"
+            id="phone_number"
+            type="text" 
+            placeholder="Enter a customer's phone number"
+            value={phoneNumberSearching}
+            onChange={formChangeHandler}
+            required
+            />
+        </form>
+    )
+}
 
-if(!searchedReservations){
+if(!reservations){
 return (<div>
-    <h4>No reservations...</h4>
+    <h4>No reservations to search...</h4>
     <Link to={`/reservations/new`}><button type="button">Add reservations</button></Link>
 </div>)}
 
+if(!searchedReservations){
+    return(
+
+        <div>
+            <ErrorAlert error={searchErrors}/>
+            <SearchForm/>
+            <h4>No reservations found</h4>
+
+            
+        </div>
+    )
+}
+
 return (
 <div>
+        <ErrorAlert error={searchErrors}/>
+        <SearchForm/>
         <table>
-        <caption>Reservations for this date...</caption>
+        <caption>Reservations for this this phone number...</caption>
                 <thead>
                     <tr>
                     <th scope="col">First Name</th>

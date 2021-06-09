@@ -50,7 +50,8 @@ function Dashboard({ date, loadDashboard,reservationRefresh,
       <TablesDisplay
        reservationRefresh={reservationRefresh}
        setReservationRefresh={setReservationRefresh}
-       tables={tables} setNewTableAddState={setNewTableAddState} newTableAddState={newTableAddState} />
+       tables={tables} setNewTableAddState={setNewTableAddState} newTableAddState={newTableAddState} 
+       />
       
 
       <button type="button" onClick={previousClickHandler}>Previous</button>

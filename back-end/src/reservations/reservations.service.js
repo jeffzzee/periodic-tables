@@ -20,7 +20,7 @@ function list(input) {
 
   return db("reservations")
     .select("*")//select all
-    .where({ [keys[0]]:keys[1] })//find by date in table
+    .where({ input })//find by date in table
     .whereNot("status","finished")//check that status is not finished
     .orderBy("reservation_time", "asc");//order by time ascending
 }
