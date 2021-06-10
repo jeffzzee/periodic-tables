@@ -3,6 +3,7 @@ import {listSpecReservations} from "../utils/api"
 import {useParams,useHistory,Link} from "react-router-dom"
 import ErrorAlert from "../layout/ErrorAlert"
 import SearchForm from "./SearchForm"
+import cancelReservationHandler from "../utils/cancelReservationHandler"
 
 function SearchTables(props){
 const{
@@ -56,6 +57,8 @@ function eachFoundReservation(){
                         <th scope="col">People</th>
                         <th scope="col">Status</th>
                         <th scope="col">SEAT</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">Cancel</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -82,6 +85,22 @@ function eachFoundReservation(){
                                     <a href={`/reservations/${eachReservation.reservation_id}/seat`}>
                                         <button type="button">Seat</button>
                                     </a>    
+                                </td>
+                            :
+                                null
+                            }
+                            {status==="booked"?
+                                <td>
+                                    <a href={`/reservations/${eachReservation.reservation_id}/edit`}>
+                                        <button type="button">Edit</button>
+                                    </a>    
+                                </td>
+                            :
+                                null
+                            }
+                            {status==="booked"?
+                                <td>
+                                    <button type="button" data-reservation-id={eachReservation.reservation_id} data-reservation-id-cancel={eachReservation.reservation_id} onClick={cancelReservationHandler}>Cancel</button>
                                 </td>
                             :
                                 null

@@ -27,6 +27,7 @@ function Routes() {
   const [tablesError, setTablesError]=useState(null)
   const [newTableAddState,setNewTableAddState] = useState(0)
   const [reservationRefresh,setReservationRefresh]=useState(0)
+  const [editState,setEditState]=useState(null)//use for edit res target
   const history = useHistory()
   
 //reservations come back as an array, so can be mapped
@@ -64,10 +65,25 @@ function Routes() {
         <Redirect to={"/dashboard"} />
       </Route>
       <Route exact={true} path="/reservations/new">
-        <ReservationNewComponent date={date} loadDashboard={loadDashboard}/>  
+        <ReservationNewComponent date={date} 
+        loadDashboard={loadDashboard}
+        editState={editState}
+        setEditState={setEditState}
+        />  
       </Route>
       <Route path="/reservations/:reservation_id/seat">
         <SeatingFolk tables={tables} 
+        reservations={reservations}
+        newTableAddState={newTableAddState}
+        setNewTableAddState={setNewTableAddState}
+        reservationRefresh={reservationRefresh}
+        setReservationRefresh={setReservationRefresh}
+        />
+      </Route>
+      <Route path="/reservations/:reservation_id/edit">
+        <ReservationEdit tables={tables} 
+        editState={editState}
+        setEditState={setEditState}
         reservations={reservations}
         newTableAddState={newTableAddState}
         setNewTableAddState={setNewTableAddState}
@@ -80,6 +96,7 @@ function Routes() {
         // reservations={reservations}
         newTableAddState={newTableAddState}
         setNewTableAddState={setNewTableAddState}
+
         />
         {/* hello world */}
 

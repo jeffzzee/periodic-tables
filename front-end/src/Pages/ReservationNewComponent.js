@@ -4,7 +4,8 @@ import {createReservation} from "../utils/api"
 import{today} from "../utils/date-time"
 import ErrorAlert from "../layout/ErrorAlert"
 
-function ReservationNewComponent({loadDashboard, date}){
+function ReservationNewComponent({loadDashboard, date,editState,
+        setEditState}){
         const blankForm={ //initialized empty form
                 first_name:'',
                 last_name:'',
@@ -80,6 +81,11 @@ function handleSubmit(event){
                 //possibly check response.body.error and set a state if it exists
                 }
         }
+}
+
+function cancelClick(event){
+        setEditState(null); 
+        history.goBack()
 }
 
 function changeHandler({target}){
@@ -172,8 +178,9 @@ function changeHandler({target}){
         />
         <br />
         <button type="submit" value="Submit" >Submit</button>
-        <button type="button" onClick={history.goBack} >Cancel</button>
+        <button type="button" onClick={cancelClick} >Cancel</button>
     </form></div>
     )
 }
 export default ReservationNewComponent
+
