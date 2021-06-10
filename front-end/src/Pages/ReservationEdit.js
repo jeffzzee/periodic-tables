@@ -17,7 +17,7 @@ function ReservationEdit(props){
         //Probably just redirect to the create form with a token? Probably...
         const {reservation_id}=useParams()//gets reservation to edit from URL
         const resID=reservation_id
-        useEffect(setTheResToEdit,[resID])
+        useEffect(setTheResToEdit,[resID,setEditState])
     function setTheResToEdit(){
         setEditState(resID)//sets child accessible ID as state 
         }

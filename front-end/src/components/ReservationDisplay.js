@@ -39,7 +39,16 @@ function ReservationDisplay(props){
                     }
                     {status==="booked"?
                         <td>
-                            <button type="button" data-reservation-id={eachReservation.reservation_id} data-reservation-id-cancel={eachReservation.reservation_id} onClick={cancelReservationHandler}>Cancel</button>
+                            <button 
+                            type="button" 
+                            data-reservation-id={eachReservation.reservation_id} 
+                            data-reservation-id-cancel={eachReservation.reservation_id} 
+                            data-refresher={setReservationRefresh} 
+                            data-refreshCount={reservationRefresh} 
+                            onClick={cancelReservationHandler}
+                            >
+                            Cancel
+                            </button>
                         </td>
                     :
                         null

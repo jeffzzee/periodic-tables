@@ -1,6 +1,6 @@
-import React, {useState} from "react"
+import React, {useEffect, useState} from "react"
 import {Link,useHistory} from "react-router-dom"
-import {createReservation} from "../utils/api"
+import {createReservation, readReservation, updateReservation } from "../utils/api"
 import{today} from "../utils/date-time"
 import ErrorAlert from "../layout/ErrorAlert"
 
@@ -14,11 +14,33 @@ function ReservationNewComponent({loadDashboard, date,editState,
                 reservation_time:'',
                 people:0
         }
+
+        
         const history=useHistory() //for links 
-        const [formState, setFormState]=useState(blankForm) //for form values
+        const [formState, setFormState]=useState(editState?formAlready:blankForm) //for form values
         const [errorCollector, setErrorCollector]=useState(null)//for front end validation
         const todayDateObject=today() //defaults to today (used in 2 helper functions )
+        const [resToEdit,setResToEdit]=useState(null)
         
+        useEffect(grabEditRes,[editState])
+        function grabEditRes(){
+                setErrorCollector(null)
+                const signal=new AbortController().signal
+                readReservation(editState,signal)
+                .then(setResToEdit)
+        }
+        let formAlready={}
+        if(resToEdit){
+                formAlready={
+                first_name:resToEdit.first_name,
+                last_name:resToEdit.last_name,
+                reservation_time:resToEdit.reservation_time,
+                reservation_date:resToEdit.reservation_date,
+                mobile_number:resToEdit.mobile_number,
+                people:resToEdit.people
+                }
+        }
+
         function dateCheck(){
                 const dateErrors=[] //error holder
                 const dateObject=new Date(formState.reservation_date) //creates a Date object from argument
@@ -82,6 +104,25 @@ function handleSubmit(event){
                 }
         }
 }
+function handleUpdate(event){
+        event.preventDefault() //submission default prevention
+        setErrorCollector(null)
+    const signal=new AbortController().signal //create an abort controller instance signal 
+        //check form's date submission locally on front end first
+        if (dateCheck()){//if no errors then true
+                //API post
+                if(timeCheck()){
+                        updateReservation(editState,formState,signal) //actual API call via imported Util
+                        .then(()=>loadDashboard())
+                        .then(()=> history.push(`/dashboard?date=${formState.reservation_date}`))//send user to reservation date URL)
+                        .catch(setErrorCollector)
+                //eventually API update
+                // console.log (response.data,"response body data")
+                //use edit state for update instead of post?
+                //possibly check response.body.error and set a state if it exists
+                }
+        }
+}
 
 function cancelClick(event){
         setEditState(null); 
@@ -101,7 +142,7 @@ function changeHandler({target}){
 
         <div>
                 <ErrorAlert error={errorCollector}/>
-                <form onSubmit= {handleSubmit}>
+                <form onSubmit= {editState?handleUpdate:handleSubmit}>
         <label htmlFor="first_name">First Name:</label>
         <input
                 name="first_name"

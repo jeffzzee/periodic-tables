@@ -67,8 +67,8 @@ function Routes() {
       <Route exact={true} path="/reservations/new">
         <ReservationNewComponent date={date} 
         loadDashboard={loadDashboard}
-        editState={editState}
-        setEditState={setEditState}
+        // editState={editState}//by not sending to this route it shouldn't be available...
+        // setEditState={setEditState}//
         />  
       </Route>
       <Route path="/reservations/:reservation_id/seat">
@@ -96,7 +96,8 @@ function Routes() {
         // reservations={reservations}
         newTableAddState={newTableAddState}
         setNewTableAddState={setNewTableAddState}
-
+        reservationRefresh={reservationRefresh}
+        setReservationRefresh={setReservationRefresh}
         />
         {/* hello world */}
 

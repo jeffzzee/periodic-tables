@@ -68,6 +68,13 @@ function updateResStatus(reservationId,newStatus){
   .returning("*")
   .then ((x)=>x[0])
 }
+function updateRes(reservationId,newInfo){
+return db("reservations")
+  .where({reservation_id:reservationId})
+  .update(newInfo)
+  .returning("*")
+  .then ((x)=>x[0])
+}
 
 module.exports = {//exports by function name
   create,
@@ -75,5 +82,6 @@ module.exports = {//exports by function name
   read,
   update,
   updateStatus,
-  updateResStatus
+  updateResStatus,
+  updateRes
 };

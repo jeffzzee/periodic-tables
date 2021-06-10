@@ -168,4 +168,25 @@ export async function listSpecReservations(params, signal) {
     const options={method:"put",reservation_id:reservationID,status:updateObject.status}
     return await fetchJson(url,options)
   }
+
+  export async function updateReservation(reservationID,updateObject,signal) {
+    const url = `${API_BASE_URL}/reservations/${reservationID}`;
+    console.log(url.toString(),"url")
+    const options = {
+      method: "PUT",
+      headers,
+      body: JSON.stringify({ data: { updateObject } }),
+      signal,
+    };
+    return await fetchJson(url, options);
+  }
   
+  //appears a delete is not truly happening in cancel reservation process
+  // export async function deleteReservationAPI(reservationID, signal){
+  //     const url=`${API_BASE_URL}/reservations/${reservationID}`;
+  //     const options={
+  //       method:"DELETE",
+  //       signal
+  //     }
+  //     return await fetchJson(url,options);
+  // }

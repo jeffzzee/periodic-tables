@@ -9,7 +9,9 @@ function SearchTables(props){
 const{
     // reservations //don't use date specific res
     newTableAddState,
-        setNewTableAddState
+        setNewTableAddState,
+        reservationRefresh,
+        setReservationRefresh
 }=props
 
 const [searchedReservations,setSearchedReservations]=useState(null)
@@ -100,7 +102,16 @@ function eachFoundReservation(){
                             }
                             {status==="booked"?
                                 <td>
-                                    <button type="button" data-reservation-id={eachReservation.reservation_id} data-reservation-id-cancel={eachReservation.reservation_id} onClick={cancelReservationHandler}>Cancel</button>
+                                    <button 
+                                    type="button" 
+                                    data-reservation-id={eachReservation.reservation_id} 
+                                    data-refresher={setReservationRefresh} 
+                                    data-refreshCount={reservationRefresh}
+                                    data-reservation-id-cancel={eachReservation.reservation_id} 
+                                    onClick={cancelReservationHandler}
+                                    >
+                                    Cancel
+                                    </button>
                                 </td>
                             :
                                 null

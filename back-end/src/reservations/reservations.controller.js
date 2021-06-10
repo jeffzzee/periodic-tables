@@ -266,6 +266,18 @@ if(status&&status!=="booked"){
 next()
 }
 
+//perhaps check reservation existing status?
+function statusUpdateCheck(request,response,next){
+  //   if(!request.body.data.status){
+  // return next({status:400,message:"no status defined"})}
+  const {status}=response.locals.reservationData
+  // console.log("status check",status)
+  if(status!=="booked"){
+    return next({status:400,message:"Status must be booked"})
+  }
+  next()
+  }
+
 
 async function updateStatus(request,response,next){
   // console.log(updatedStatus,"updated status from knex service")
@@ -279,11 +291,37 @@ async function updateStatus(request,response,next){
 
 }
 
+async function update(request,response,next){
+  const {data}=request.body
+  const updatedReservation={
+    ...response.locals.reservationData,
+    first_name:request.body.data.first_name,
+    last_name:request.body.data.last_name,
+    reservation_time:request.body.data.reservation_time,
+    reservation_date:request.body.data.reservation_date,
+    mobile_number:request.body.data.mobile_number,
+    people:request.body.data.people
+  }
+  const updatedRes= await service.updateRes(response.locals.reservationData.reservation_id,updatedReservation)
+  console.log("XXXXXX",updatedRes)
+  response
+  .status(200)
+  .json({data:updatedRes})
+
+}
+
+// async function deleteReservation(request, response,next){
+//   const resID=request.params.reservation_id//use url param for resID
+//   await service.deleteReservation(re)
+// }
+
 module.exports = {
   list:asyncErrorBoundary(list),
   create:[validFormSubmission,
     statusCreateCheck,
     asyncErrorBoundary(create)],
   read:[asyncErrorBoundary(resExistsMidWare), read],
-  updateStatus:[asyncErrorBoundary(resExistsMidWare),statusCheck, notFinished, asyncErrorBoundary(updateStatus)]
+  update:[asyncErrorBoundary(resExistsMidWare),validFormSubmission,statusUpdateCheck,asyncErrorBoundary(update)],
+  updateStatus:[asyncErrorBoundary(resExistsMidWare),statusCheck, notFinished, asyncErrorBoundary(updateStatus)],
+  // destroy:[asyncErrorBoundary(resExistsMidWare),asyncErrorBoundary( deleteReservation)]
 };
