@@ -10,28 +10,43 @@ function SearchForm({
         setPhoneNumberSearching(value)
     }
     return(
-        <form onSubmit={searchTableGetter}>
-            <label 
-                htmlFor="mobile_number"
-            >
-                Phone number to find
-            </label>
-            <input 
-                name="mobile_number"
-                id="mobile_number"
-                type="tel" 
-                placeholder="XXX-XXX-XXXX"
-                value={phoneNumberSearching}
-                onChange={formChangeHandler}
-                required
-                autofocus
-            />
-            <button 
-                type="submit" 
-            >
-                Submit
-            </button>
-        </form>
+        <div className="container">
+            <form onSubmit={searchTableGetter}>
+                <div className="row">
+                    <div className="col">
+                        <label 
+                            htmlFor="mobile_number"
+                        >
+                            Phone number to find
+                        </label>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col">
+                        <input 
+                            name="mobile_number"
+                            id="mobile_number"
+                            type="tel" 
+                            placeholder="XXX-XXX-XXXX"
+                            value={phoneNumberSearching}
+                            onChange={formChangeHandler}
+                            required
+                            autofocus
+                            />
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col">
+                        <button 
+                            type="submit" 
+                            className="btn btn-success" 
+                            >
+                            Submit
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
     )
 }
 

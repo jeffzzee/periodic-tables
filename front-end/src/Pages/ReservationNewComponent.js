@@ -14,19 +14,19 @@ function ReservationNewComponent({
         reservationRefresh,
         setReservationRefresh,
 }) {
+  const blankForm = {
+          first_name: '',
+          last_name: '',
+          mobile_number: '',
+          reservation_date: '',
+          reservation_time: '',
+          people: 0,
+  }
         const [errorCollector, setErrorCollector] = useState(null) //for front end validation
         const [formState, setFormState] = useState(blankForm)
         const todayDateObject = today() //defaults to today (used in 2 helper functions )
         const history = useHistory() //for links
         //initialized empty form
-        const blankForm = {
-                first_name: '',
-                last_name: '',
-                mobile_number: '',
-                reservation_date: '',
-                reservation_time: '',
-                people: 0,
-        }
 
   useEffect(grabEditRes, [editState])
   function grabEditRes() {
@@ -163,91 +163,124 @@ function ReservationNewComponent({
   }
   return (
     <div>
-      <ErrorAlert error={errorCollector} />
-      <form onSubmit={editState ? handleUpdate : handleSubmit}>
-        <label htmlFor="first_name">First Name:</label>
-        <input
-          name="first_name"
-          id="first_name"
-          type="text"
-          // defaultValue=
-          onChange={changeHandler}
-          value={formState.first_name}
-          placeholder="First Name"
-          required
-        />
-        <br />
-        <label htmlFor="last_name">Last Name:</label>
-        <input
-          name="last_name"
-          id="last_name"
-          type="text"
-          // defaultValue=
-          onChange={changeHandler}
-          value={formState.last_name}
-          placeholder="Last Name"
-          required
-        />
-        <br />
-        <label htmlFor="mobile_number">Phone:</label>
-        <input
-          name="mobile_number"
-          id="mobile_number"
-          type="tel"
-          // pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-          // defaultValue=
-          onChange={changeHandler}
-          value={formState.mobile_number}
-          placeholder="XXX-XXX-XXXX"
-          required
-        />
-        <br />
-
-        <label>Reservation Date:</label>
-        <input
-          name="reservation_date"
-          id="reservation_date"
-          type="date"
-          // defaultValue=
-          onChange={changeHandler}
-          value={formState.reservation_date}
-          placeholder="Date"
-          required
-        />
-        <br />
-        <label>Reservation Time:</label>
-        <input
-          name="reservation_time"
-          id="reservation_time"
-          type="time"
-          // defaultValue=
-          onChange={changeHandler}
-          value={formState.reservation_time}
-          // placeholder=
-          required
-        />
-        <br />
-        <label>Number of People:</label>
-        <input
-          name="people"
-          id="people"
-          type="number"
-          min="1"
-          step="1"
-          onChange={changeHandler}
-          value={formState.people}
-          placeholder="Party Number"
-          required
-        />
-        <br />
-        <button type="submit" value="Submit">
-          Submit
-        </button>
-        <button type="button" onClick={cancelClick}>
-          cancel
-        </button>
-      </form>
+      <div className="container">
+        <h2>Reservation Form</h2>
+        <ErrorAlert error={errorCollector} />
+        <form onSubmit={editState ? handleUpdate : handleSubmit}>
+          <div className="row">
+            <div className="col-25">
+              <label htmlFor="first_name">First Name:</label>
+            </div>
+            <div className="col-75">
+              <input
+                name="first_name"
+                id="first_name"
+                type="text"
+                // defaultValue=
+                onChange={changeHandler}
+                value={formState.first_name}
+                placeholder="First Name"
+                required
+              />
+            </div>
+          </div>
+          <br />
+          <div className="row">
+            <div className="col-25">
+              <label htmlFor="last_name">Last Name:</label>
+            </div>
+            <div className="col-75">
+              <input
+                name="last_name"
+                id="last_name"
+                type="text"
+                onChange={changeHandler}
+                value={formState.last_name}
+                placeholder="Last Name"
+                required
+              />
+            </div>
+          </div>
+          <br />
+          <div className="row">
+            <div className="col-25">
+              <label htmlFor="mobile_number">Phone:</label>
+            </div>
+            <div className="col-75">
+              <input
+                name="mobile_number"
+                id="mobile_number"
+                type="tel"
+                onChange={changeHandler}
+                value={formState.mobile_number}
+                placeholder="XXX-XXX-XXXX"
+                required
+              />
+            </div>
+          </div>
+          <br />
+          <div className="row">
+            <div className="col-25">
+              <label>Reservation Date:</label>
+            </div>
+            <div className="col-75">
+              <input
+                name="reservation_date"
+                id="reservation_date"
+                type="date"
+                onChange={changeHandler}
+                value={formState.reservation_date}
+                placeholder="Date"
+                required
+              />
+            </div>
+          </div>
+          <br />
+          <div className="row">
+            <div className="col-25">
+              <label>Reservation Time:</label>
+            </div>
+            <div className="col-75">
+              <input
+                name="reservation_time"
+                id="reservation_time"
+                type="time"
+                onChange={changeHandler}
+                value={formState.reservation_time}
+                required
+              />
+            </div>
+          </div>
+          <br />
+          <div className="row">
+            <div className="col-25">
+              <label>Number of People:</label>
+            </div>
+            <div className="col-75">
+              <input
+                name="people"
+                id="people"
+                type="number"
+                min="1"
+                step="1"
+                onChange={changeHandler}
+                value={formState.people}
+                placeholder="Party Number"
+                required
+              />
+            </div>
+          </div>
+          <br />
+          <button type="button" className="btn btn-danger" onClick={cancelClick}>
+            cancel
+          </button>
+          <button type="submit" className="btn btn-success" value="Submit">
+            Submit
+          </button>
+        </form>
+      </div>
     </div>
+
   )
 }
 export default ReservationNewComponent

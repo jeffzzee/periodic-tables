@@ -58,37 +58,47 @@ function SeatingFolk(props){
     }
     
     return (
-        <div> 
+        <div className="container"> 
+            <h2>Assign this reservation to a table:</h2>
             <ErrorAlert error={errorCollector}/>
             <form onSubmit={seatingFunction}>
-                <label htmlFor="table_id">Table Assignment</label>
-                    <select name="table_id" id="table_id" 
-                    value={tableID}
-                    defaultValue={tableID}
-                     onChange={handleChange}
-                     placeholder="select"
-                     >
-                         <option 
-                         default
-                         name="def"
-                     value="Select a table"
-                     >Select a table</option>
-                        {        tables.map((eachTable)=>{
-        return(
-                
-                    <option 
-                    name={eachTable.table_id}
-                    value={eachTable.table_id}
-                    key={eachTable.table_id}
-                    >
-                    {eachTable.table_name} - {eachTable.capacity}
-                    </option>
-            )
-        })
-}
-                    </select>
-                    <button type="submit" >Submit</button>
-                    <button type="button" onClick={history.goBack}>Cancel</button>
+                <div className="row">
+                    <div className="col">
+                        <label htmlFor="table_id">Table Assignment</label>
+                        <select name="table_id" id="table_id" 
+                        value={tableID}
+                        defaultValue={tableID}
+                        onChange={handleChange}
+                        placeholder="select"
+                        >
+                            <option 
+                            default
+                            name="def"
+                            value="Select a table"
+                            >
+                            Select a table
+                            </option>
+                            {tables.map((eachTable)=>{
+                                return(
+                                    <option 
+                                        name={eachTable.table_id}
+                                        value={eachTable.table_id}
+                                        key={eachTable.table_id}
+                                    >
+                                        {eachTable.table_name} - {eachTable.capacity}
+                                    </option>
+                                )               
+                            })
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col">
+                        <button type="button" className="btn btn-danger" onClick={history.goBack}>Cancel</button>
+                        <button type="submit" className="btn btn-success">Submit</button>
+                    </div>
+                </div>
             </form>
         </div>
     )

@@ -2,3 +2,38 @@
   background-color: #393a44;
   min-width: 200px;
 }
+
+table, th, td {
+  border: 1px solid black;
+}
+
+input[type=submit],
+input[type=text],
+input[type=tel],
+input[type=date],
+input[type=time],
+input[type=number]{
+  float:left;
+}
+
+.col-25{
+  width:25%;
+  float:left;
+}
+.col-75{
+  width:75%;
+  float:right;
+}
+
+.tableinput {
+  float:left;
+  
+}
+
+@media screen and (max-width: 600px) {
+  .col-25, .col-75, input[type=submit] {
+    width: 100%;
+    margin-top: 0;
+  }
+}
+

@@ -5,16 +5,16 @@ import ErrorAlert from "../layout/ErrorAlert"
 
 
 function TableNew(props){
+    const tableFormBlank={
+        table_name:"",
+        capacity:0
+    }
     const {loadDashboard,newTableAddState,setNewTableAddState}=props
     const [tableFormState,setTableFormState]=useState(tableFormBlank)
     const [tableErrorState,setTableErrorState]=useState(null)
     
     const history=useHistory()
     
-    const tableFormBlank={
-        table_name:"",
-        capacity:0
-    }
 
     function tableFormCheck(){
         const tableFormErrors = []
@@ -56,23 +56,29 @@ function TableNew(props){
         setTableFormState({...tableFormState,[target.name]:value})
     }
     return (
-        <div>
+        <div className="container">
+            <h2>Table Create Form</h2>
             <ErrorAlert error={tableErrorState}/>
             <form onSubmit={submitHandler}>
+                <label htmlFor="table_name">Table Name</label>
+
                 <input 
                     type="text"
                     id="table_name"
                     name="table_name"
                     minLength="2"
+                    className="tableinput bm-2"
                     value={tableFormState.table_name}
                     onChange={changeHandler}
                     required
                 />
                 <br/>
+                <label htmlFor="capacity">Table Capacity</label>
                 <input 
                     type="number"
                     id="capacity"
                     name="capacity"
+                    className="tableinput bm-2"
                     min="1"
                     step="1"
                     onChange={changeHandler}
@@ -81,8 +87,8 @@ function TableNew(props){
                     required
                 />
                 <br/>
-                <button type="submit">Submit</button>
-                <button type="button" onClick={history.goBack}>Cancel</button>
+                <button type="button" className="btn btn-danger" onClick={history.goBack}>Cancel</button>
+                <button type="submit" className="btn btn-success">Submit</button>
             </form>
         </div>
     )

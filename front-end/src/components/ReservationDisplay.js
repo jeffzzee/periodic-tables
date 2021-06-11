@@ -75,10 +75,10 @@ function ReservationDisplay(props) {
     })
   }
 
-  if (!reservations) {
+  if (typeof reservations[0]==="undefined"||reservations===null) {
     return (
       <div>
-        <h4>No Reservations for this date... Add reservations at </h4>
+        <h4>No Reservations for this date... </h4>
       </div>
     )
   }
@@ -89,6 +89,7 @@ function ReservationDisplay(props) {
         <caption>Reservations for this date...</caption>
         <thead>
           <tr>
+            <th scope="col">RezID</th>
             <th scope="col">First Name</th>
             <th scope="col">Last Name</th>
             <th scope="col">Phone</th>
