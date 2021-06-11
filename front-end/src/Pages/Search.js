@@ -1,61 +1,41 @@
-import React, { useEffect,useState } from "react"
+import React, { useState } from "react"
 import {listSpecReservations} from "../utils/api"
-import {useParams,useHistory,Link} from "react-router-dom"
 import ErrorAlert from "../layout/ErrorAlert"
 import SearchForm from "./SearchForm"
-// import cancelReservationHandler from "../utils/cancelReservationHandler"
 import {reservationStatusUpdate} from "../utils/api"
 
 function SearchTables(props){
 const{
-    // reservations //don't use date specific res
     newTableAddState,
-        setNewTableAddState,
-        reservationRefresh,
-        setReservationRefresh
+    setNewTableAddState,
+    reservationRefresh,
+    setReservationRefresh
 }=props
 
 const [searchedReservations,setSearchedReservations]=useState(null)
 const [phoneNumberSearching,setPhoneNumberSearching]=useState('')
 const [searchErrors,setSearchErrors]=useState(null)
-const history=useHistory()
 
-
-// useEffect(searchTableGetter,[phoneNumberSearching])//doesn't repeat, only fires on event
 function searchTableGetter(event){
     event.preventDefault()
-    console.log("search submit function called")
-    console.log(phoneNumberSearching,phoneNumberSearching.length!==0)
     if(phoneNumberSearching&&phoneNumberSearching.length!==0){
-    const abortController=new AbortController()
-    const signal=abortController.signal
-    console.log("abortcontrollersetupreached")
-    setSearchErrors(null)
-    listSpecReservations({mobile_number:phoneNumberSearching},signal)
-        .then(setSearchedReservations)
-        .then((x)=>setNewTableAddState(newTableAddState+1))
-        .then(()=>console.log("we got here",searchedReservations))
-        .catch(setSearchErrors)
-        // .catch((error)=>console.log(error))
-
-    return()=>abortController.abort()
-}
-// function handleChange(event){
-//     event.preventDefault()
-
-// }
+        const abortController=new AbortController()
+        const signal=abortController.signal
+            setSearchErrors(null)
+        listSpecReservations({mobile_number:phoneNumberSearching},signal)
+            .then(setSearchedReservations)
+            .then((x)=>setNewTableAddState(newTableAddState+1))
+            .then(()=>console.log("we got here",searchedReservations))
+            .catch(setSearchErrors)
+        return()=>abortController.abort()
+    }
 }
 function cancelReservationHandler({target}){
     if (window.confirm("Do you want to cancel this reservation? This cannot be undone.")) {
     const resID =target.getAttribute("data-reservation-id")
-    // const reservationRefresh = target.getAttribute("data-refresher")
-    // const reservationRefreshCounter=target.getAttribute("data-refreshcount")
-    // console.log("attribute gotten",resID)
     const abortController=new AbortController()
-    //no useEffect necessary for an onClick event API
     reservationStatusUpdate(resID,"cancelled", abortController.signal)
     .then(()=>setReservationRefresh(reservationRefresh+1))
-    // .catch(setDeleteErrors)
     }
 }
 
@@ -119,8 +99,6 @@ function eachFoundReservation(){
                                     <button 
                                     type="button" 
                                     data-reservation-id={eachReservation.reservation_id} 
-                                    // data-refresher={setReservationRefresh} 
-                                    // data-refreshcount={reservationRefresh}
                                     data-reservation-id-cancel={eachReservation.reservation_id} 
                                     onClick={cancelReservationHandler}
                                     >
@@ -143,26 +121,6 @@ function eachFoundReservation(){
             <h4>No reservations found</h4>
         </div>)
 }
-
-
-// if(!reservations){
-// return (<div>
-//     <h4>No reservations to search...</h4>
-//     <Link to={`/reservations/new`}><button type="button">Add reservations</button></Link>
-// </div>)}
-
-// if(!searchedReservations){
-//     return(
-
-//         <div>
-//             <ErrorAlert error={searchErrors}/>
-//             <SearchForm/>
-//             <h4>No reservations found</h4>
-
-            
-//         </div>
-//     )
-// }
 
 return (
         <div>

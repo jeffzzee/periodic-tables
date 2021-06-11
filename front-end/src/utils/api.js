@@ -58,28 +58,19 @@ async function fetchJson(url, options, onCancel) {
  *  a promise that resolves to a possibly empty array of reservation saved in the database.
  */
 
-// compare to flashcard list
-// export async function listDecks(signal) {
-  //   const url = `${API_BASE_URL}/decks?_embed=cards`;
-  //   return await fetchJson(url, { signal });
-  // }
-  
-  //given api call vvv
 export async function listReservations(params, signal) {
-  console.log("listReservations reached")
-  console.log("params in api",params)
   const url = new URL(`${API_BASE_URL}/reservations`);
   Object.entries(params).forEach(([key, value]) =>
     url.searchParams.append(key, value.toString())
   );
-  console.log("url",url.toString())
   return await fetchJson(url, { headers, signal }, [])
     .then(formatReservationDate)
     .then(formatReservationTime);
 }
+
 export async function listTables(params, signal) {
   const url = new URL(`${API_BASE_URL}/tables`);
-  return await fetchJson(url,  {signal}, []  )//what are headers? What is [] doing? Removed to keep only signal. Array dot lenght will be false but [] is truthy
+  return await fetchJson(url,  {signal}, []  )
 }
 
 export async function listSpecReservations(params, signal) {
@@ -87,115 +78,77 @@ export async function listSpecReservations(params, signal) {
   Object.entries(params).forEach(([key,value])=>
     url.searchParams.append(key, value.toString())
   )
-  console.log("url",url.toString())
-  return await fetchJson(url,  {headers, signal}, []  )//what are headers? What is [] doing? Removed to keep only signal. Array dot lenght will be false but [] is truthy
+  return await fetchJson(url,  {headers, signal}, []  )
 }
 
+export async function readReservation(reservationId, signal) {
+  const url = `${API_BASE_URL}/reservations/${reservationId}`//?_embed=cards`;
+  return await fetchJson(url, { signal });
+}
 
-//from read vvv
-// export async function readDeck(deckId, signal) {
-  //   const url = `${API_BASE_URL}/decks/${deckId}?_embed=cards`;
-  //   return await fetchJson(url, { signal });
-  // }
-  export async function readReservation(reservationId, signal) {
-    const url = `${API_BASE_URL}/reservations/${reservationId}`//?_embed=cards`;
-    return await fetchJson(url, { signal });
-  }
-
-  //create from flashcards
-
-  // export async function createDeck(deck, signal) {
-  //   const url = `${API_BASE_URL}/decks`;
-  //   const options = {
-  //     method: "POST",
-  //     headers,
-  //     body: JSON.stringify(stripCards(deck)),
-  //     signal,
-  //   };
-  //   return await fetchJson(url, options);
-  // }
   
-  export async function createReservation(reservationForm, signal) {
-    const url = `${API_BASE_URL}/reservations`;
-    console.log("create reservation reached")
-    const options = {
-      method: "POST",
-      headers,//shows json is body type
-      body: JSON.stringify({data:reservationForm}),
-      signal,
-    };
-    return await fetchJson(url, options);
-  }
+export async function createReservation(reservationForm, signal) {
+  const url = `${API_BASE_URL}/reservations`;
+  const options = {
+    method: "POST",
+    headers,//shows json is body type
+    body: JSON.stringify({data:reservationForm}),
+    signal,
+  };
+  return await fetchJson(url, options);
+}
 
-  export async function createTable(tableForm, signal) {
-    const url = `${API_BASE_URL}/tables`;
-    const options = {
-      method: "POST",
-      headers,//shows json is body type
-      body: JSON.stringify({data:tableForm}),
-      signal,
-    };
-    console.log(tableForm,"tableForm")
-    return await fetchJson(url, options);
-  }
-  
-  export async function updateTable(updatedTable,reservation_id, signal) {
-    const url = `${API_BASE_URL}/tables/${updatedTable}/seat`;
-    const options = {
-      method: "PUT",
-      headers,
-      body: JSON.stringify({ data: { reservation_id } }),
-      signal,
-    };
-    return await fetchJson(url, options);
-  }
+export async function createTable(tableForm, signal) {
+  const url = `${API_BASE_URL}/tables`;
+  const options = {
+    method: "POST",
+    headers,//shows json is body type
+    body: JSON.stringify({data:tableForm}),
+    signal,
+  };
+  return await fetchJson(url, options);
+}
 
-  export async function deleteTableResIdDetail(table,reservation,signal){
-    const url = `${API_BASE_URL}/tables/${table}/seat`;
-    const options = { 
-      method: "DELETE",
-      // headers,
-      // body:JSON.stringify({data:{reservation_id:reservation}}), 
-      signal 
-    };
-    console.log(table)
-    console.log(url,"url delete resid fetch api")
-    return await fetchJson(url, options);
-  }
+export async function updateTable(updatedTable,reservation_id, signal) {
+  const url = `${API_BASE_URL}/tables/${updatedTable}/seat`;
+  const options = {
+    method: "PUT",
+    headers,
+    body: JSON.stringify({ data: { reservation_id } }),
+    signal,
+  };
+  return await fetchJson(url, options);
+}
 
-  export async function reservationStatusUpdate(reservationID,updateObject,signal){
-    const url= `${API_BASE_URL}/reservations/${reservationID}/status`
-    const options={
-      method:"PUT",
-      body:JSON.stringify({data:{reservation_id:reservationID,status:updateObject}}),
-      headers, 
-      signal
-    }
-    return await fetchJson(url,options)
-  }
+export async function deleteTableResIdDetail(table,reservation,signal){
+  const url = `${API_BASE_URL}/tables/${table}/seat`;
+  const options = { 
+    method: "DELETE",
+    // headers,
+    // body:JSON.stringify({data:{reservation_id:reservation}}), 
+    signal 
+  };
+  return await fetchJson(url, options);
+}
 
-  export async function updateReservation(reservationID,updateObject,signal) {
-    const url = `${API_BASE_URL}/reservations/${reservationID}`;
-    console.log(url.toString(),"url constructed in API")
-    console.log("the info sent to data: value",updateObject)
-    console.log("what it looks like spread into data",
-    {data:{...updateObject}}
-    )
-    const options = {
-      method: "PUT",
-      headers,
-      body: JSON.stringify({ data: { ...updateObject } }),
-      signal,
-    };
-    return await fetchJson(url, options);
+export async function reservationStatusUpdate(reservationID,updateObject,signal){
+  const url= `${API_BASE_URL}/reservations/${reservationID}/status`
+  const options={
+    method:"PUT",
+    body:JSON.stringify({data:{reservation_id:reservationID,status:updateObject}}),
+    headers, 
+    signal
   }
-  
-  //appears a delete is not truly happening in cancel reservation process
-  // export async function deleteReservationAPI(reservationID, signal){
-  //     const url=`${API_BASE_URL}/reservations/${reservationID}`;
-  //     const options={
-  //       method:"DELETE",
-  //       signal
-  //     }
-  //     return await fetchJson(url,options);
-  // }
+  return await fetchJson(url,options)
+}
+
+export async function updateReservation(reservationID,updateObject,signal) {
+  const url = `${API_BASE_URL}/reservations/${reservationID}`;
+  const options = {
+    method: "PUT",
+    headers,
+    body: JSON.stringify({ data: { ...updateObject } }),
+    signal,
+  };
+  return await fetchJson(url, options);
+}

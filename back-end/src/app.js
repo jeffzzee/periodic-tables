@@ -12,13 +12,15 @@ const tablesRouter= require("./tables/tables.router");
 
 const app = express();
 
+//validate requests
 app.use(cors());
 app.use(express.json());
 
+//funnel server requests by url
 app.use("/reservations", reservationsRouter);
 app.use("/tables", tablesRouter);
 
 app.use(notFound);
-app.use(errorHandler);//four parameter sought to locate
+app.use(errorHandler);
 
 module.exports = app;

@@ -18,7 +18,6 @@ function read(table_id) {
 function list() {
   return db("tables")
     .select("*")//select all
-    // .where({ reservation_date })//find by date in table
     .orderBy("table_name", "asc");//order by name ascending
 }
 function update(newTable){
@@ -40,13 +39,10 @@ function destroyResId(table_id){
 
 
 
-module.exports = {//exports by function name
+module.exports = {
   create,
   read,
   list,
   update,
-  // proofOfResRemoval
   destroyResId,
-
-  // read,
 };

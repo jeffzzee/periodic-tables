@@ -1,6 +1,5 @@
 import React, {useEffect,useState} from "react";
-
-import { Redirect, Route, Switch, useHistory } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
 import NotFound from "./NotFound";
 import { today } from "../utils/date-time";
@@ -20,18 +19,14 @@ import ReservationEdit from "../pages/ReservationEdit"
  * @returns {JSX.Element}
  */
 function Routes() {
-  const query = useQuery();
-  const date = query.get("date")?query.get("date"):today();
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
   const [tables, setTables]=useState([])
   const [tablesError, setTablesError]=useState(null)
   const [newTableAddState,setNewTableAddState] = useState(0)
   const [reservationRefresh,setReservationRefresh]=useState(0)
-  
-  const history = useHistory()
-  
-//reservations come back as an array, so can be mapped
+  const query = useQuery();
+  const date = query.get("date")?query.get("date"):today();
 
   
   useEffect(loadDashboard, [date,reservationRefresh]);
@@ -66,66 +61,62 @@ function Routes() {
         <Redirect to={"/dashboard"} />
       </Route>
       <Route exact={true} path="/reservations/new">
-        <ReservationNewComponent date={date} 
-        loadDashboard={loadDashboard}
-        // editState={editState}//by not sending to this route it shouldn't be available...
-        // setEditState={setEditState}//
-        reservationRefresh={reservationRefresh}
-        setReservationRefresh={setReservationRefresh}
+        <ReservationNewComponent 
+          date={date} 
+          loadDashboard={loadDashboard}
+          reservationRefresh={reservationRefresh}
+          setReservationRefresh={setReservationRefresh}
         />  
       </Route>
       <Route path="/reservations/:reservation_id/seat">
-        <SeatingFolk tables={tables} 
-        reservations={reservations}
-        newTableAddState={newTableAddState}
-        setNewTableAddState={setNewTableAddState}
-        reservationRefresh={reservationRefresh}
-        setReservationRefresh={setReservationRefresh}
+        <SeatingFolk 
+          tables={tables} 
+          reservations={reservations}
+          newTableAddState={newTableAddState}
+          setNewTableAddState={setNewTableAddState}
+          reservationRefresh={reservationRefresh}
+          setReservationRefresh={setReservationRefresh}
         />
       </Route>
       <Route path="/reservations/:reservation_id/edit">
-        <ReservationEdit tables={tables} 
-        reservations={reservations}
-        newTableAddState={newTableAddState}
-        setNewTableAddState={setNewTableAddState}
-        reservationRefresh={reservationRefresh}
-        setReservationRefresh={setReservationRefresh}
+        <ReservationEdit 
+          tables={tables} 
+          reservations={reservations}
+          newTableAddState={newTableAddState}
+          setNewTableAddState={setNewTableAddState}
+          reservationRefresh={reservationRefresh}
+          setReservationRefresh={setReservationRefresh}
         />
       </Route>
       <Route path="/search">
         <SearchTables 
-        // reservations={reservations}
-        newTableAddState={newTableAddState}
-        setNewTableAddState={setNewTableAddState}
-        reservationRefresh={reservationRefresh}
-        setReservationRefresh={setReservationRefresh}
+          newTableAddState={newTableAddState}
+          setNewTableAddState={setNewTableAddState}
+          reservationRefresh={reservationRefresh}
+          setReservationRefresh={setReservationRefresh}
         />
-        {/* hello world */}
-
-
       </Route>
       <Route path="/dashboard">
         <Dashboard 
-        date={date}
-        loadDashboard={loadDashboard} 
-        setReservationsError={setReservationsError}
-        reservationsError={reservationsError} 
-        reservations={reservations}
-        tables={tables}
-        tablesError ={tablesError }
-        setNewTableAddState={setNewTableAddState}
-        newTableAddState={newTableAddState}
-        setTablesError={setTablesError}
-        reservationRefresh={reservationRefresh}
-        setReservationRefresh={setReservationRefresh}
+          date={date}
+          loadDashboard={loadDashboard} 
+          setReservationsError={setReservationsError}
+          reservationsError={reservationsError} 
+          reservations={reservations}
+          tables={tables}
+          tablesError ={tablesError }
+          setNewTableAddState={setNewTableAddState}
+          newTableAddState={newTableAddState}
+          setTablesError={setTablesError}
+          reservationRefresh={reservationRefresh}
+          setReservationRefresh={setReservationRefresh}
        />
       </Route>
       <Route path="/tables/new">
         <TableNew 
-        loadDashboard={loadDashboard}
-        newTableAddState={newTableAddState}
-        setNewTableAddState={setNewTableAddState}
-        
+          loadDashboard={loadDashboard}
+          newTableAddState={newTableAddState}
+          setNewTableAddState={setNewTableAddState}
         />
       </Route>
       <Route>

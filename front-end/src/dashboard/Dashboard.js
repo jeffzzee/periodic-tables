@@ -12,26 +12,27 @@ import TablesDisplay from "../components/TablesDisplay"
  *  the date for which the user wants to view reservations.
  * @returns {JSX.Element}
  */
-function Dashboard({ date, loadDashboard,reservationRefresh,
-  setReservationRefresh, reservations,setNewTableAddState,newTableAddState,
- reservationsError, tables}) {
+function Dashboard({ 
+  date, 
+  reservationRefresh,
+  setReservationRefresh, 
+  reservations,
+  setNewTableAddState,
+  newTableAddState,
+  reservationsError, 
+  tables
+}) {
   const history = useHistory()
-
-  // useEffect(loadDashboard, [date]);
-
-  
+ 
   function previousClickHandler(){
-
     history.push(`/dashboard?date=${previous(date)}`)
   }
 
   function todayClickHandler(){
-
     history.push(`/dashboard?date=${today()}`)
   }
 
   function nextClickHandler(){
-
     history.push(`/dashboard?date=${next(date)}`)
   }
 
@@ -42,15 +43,21 @@ function Dashboard({ date, loadDashboard,reservationRefresh,
       <div className="d-md-flex mb-3">
         <h4 className="mb-0">Reservations for {date}</h4>
       </div>
-      <ErrorAlert error={reservationsError} />
-      <ReservationDisplay reservations={reservations}
-      reservationRefresh={reservationRefresh}
-      setReservationRefresh={setReservationRefresh}
+      <ErrorAlert 
+        error={reservationsError} 
+      />
+      <ReservationDisplay 
+        reservations={reservations}
+        reservationRefresh={reservationRefresh}
+        setReservationRefresh={setReservationRefresh}
       />
       <TablesDisplay
-       reservationRefresh={reservationRefresh}
-       setReservationRefresh={setReservationRefresh}
-       tables={tables} setNewTableAddState={setNewTableAddState} newTableAddState={newTableAddState} />
+        reservationRefresh={reservationRefresh}
+        setReservationRefresh={setReservationRefresh}
+        tables={tables} 
+        setNewTableAddState={setNewTableAddState} 
+        newTableAddState={newTableAddState} 
+      />
       
 
       <button type="button" onClick={previousClickHandler}>Previous</button>

@@ -7,7 +7,7 @@ const asyncErrorBoundary= require("../errors/asyncErrorBoundary");
 
 
 
-
+//quick API reservation finder
 async function resExistsMidWare(request,response,next){
   let foundReservation = ""
   const reservationId = request.params.reservation_id
@@ -25,6 +25,7 @@ async function resExistsMidWare(request,response,next){
   }
 }
 
+//pulled from front end utils/date-time
 function asDateString(date) {
   return `${date.getFullYear().toString(10)}-${(date.getMonth() + 1)
     .toString(10)
@@ -34,10 +35,12 @@ function today() {
   return asDateString(new Date());
 }
 
+//all required form items
 const fullForm=[
   "first_name","last_name","mobile_number","reservation_date","reservation_time","people"
-]//all required form items
+]
 
+//all form keys have a value
 function emptyCheck(input){
   for (let key in input){
     if (!input[key]){
@@ -47,13 +50,14 @@ function emptyCheck(input){
   return true
 }
 
+//check validity of reservation form fields
 function validFormSubmission(request,response,next){
-  const {data={}}=request.body //pulls data or uses empty object
-  const reservationDate = new Date(data.reservation_date
-  // ${data.reservation_test} GMT-0500
+  const {data={}}=request.body //pulls data from request or uses empty object by default
+  const reservationDate = new Date(data.reservation_date//make the submitted date a Date object
   )
-  //check submission existence
-  const dataKeys = Object.keys(data)//array of all keys
+
+  //check form submission elements existence
+  const dataKeys = Object.keys(data)//array of all keys in the submitted data
   fullForm.forEach((item)=>{
     if(!dataKeys.includes(item)){//if the request is missing a fullform element
       return next({
@@ -62,19 +66,24 @@ function validFormSubmission(request,response,next){
       })
     }
   })
-  if (!emptyCheck(data)) //|| data.last_name === '' || data.mobile_number === '' )
-  {//send request data to null checker
+
+  //check if any field is blank
+  if (!emptyCheck(data)) {//send request data to null checker emptyCheck
     return next({
       status: 400,
       message: "Invalid data format provided. Requires {string:[first_name, last_name, mobile_number], date: reservation_date, time: reservation_time, number: people}"
-    }) //if false go to error handler
+    })
   }
+
+  //check that reservation people is a number
   if (typeof data.people !== "number") {
     return next({
       status: 400,
       message: "Needs to be a number, people is not a number.",
     });
   }
+
+  //check that reservation people is greater than 0
   if (data.people < 1){
     return next({
       status: 400,
@@ -82,6 +91,7 @@ function validFormSubmission(request,response,next){
     });
   }
   
+  //check that reservation date is in the future
   if(isReservationPast(data.reservation_date)){
     return next({
       status:400,
@@ -89,12 +99,15 @@ function validFormSubmission(request,response,next){
     })
   }
 
+  //check that reservation date is in the right format YYYY-MM-DD
   if (!/\d{4}-\d{2}-\d{2}/.test(data.reservation_date)) {
     return next({
       status: 400,
       message: "reservation_date is not a date.",
     });
   }
+
+  //check reservation day for Tuesday
   if (reservationDate.getDay() === 1) {
     console.log("tuesday tested")
     return next({
@@ -103,70 +116,45 @@ function validFormSubmission(request,response,next){
       "reservation_date cannot be made on a Tuesday, the restaurant is closed.",
     });
   }
-  // start = new Date(${data.reservation_date} 10:30:00 GMT-500),
-  // end = new Date(${data.reservation_date} 21:30:00 GMT-500);
-  
-  // if(reservationDate < new Date().getTime()){
-  //   console.log("future tested")
-  //   return next({
-  //     status:400,
-  //     message: "reservations must be made for the future"
-  //   })
-  // }
+
+  //create a comparison date for the present day and time
   const now=today()
-  const reserveDateTime=new Date(`${data.reservation_date}T${data.reservation_time}:00.000`)//extends the date/time continuum for comparison of past
+  //extends the date/time continuum to milliseconds for comparison of past
+  const reserveDateTime=new Date(`${data.reservation_date}T${data.reservation_time}:00.000`)
+
+  //is reserved time before the present?
   if (reserveDateTime<now){
     return next({status:400,message:"reservation_time must be in the future."})
   }
+  //is reserved time is reserved time before opening time?
   if(reserveDateTime.getHours()===10&&reserveDateTime.getMinutes()<30){
     return next({status:400,message:"reservation_time must come after our opening time of 10:30am"})
   }
+  //is reserved time too close to closing  time?
   if(reserveDateTime.getHours()===9&&reserveDateTime.getMinutes()>30){
     return next({status:400,message:"reservation_time must be made an hour before our closing time of 10:30pm"})
   }
   
+  //is reserved time a proper time format?
   if (!/[0-9]{2}:[0-9]{2}/.test(data.reservation_time)) {
     return next({
       status: 400,
-        message: "reservation_time is not a time.",
-      });
-    }
-    // const todaysDate = new Date();
-    
-    
-    // if (reserveDate < todaysDate) {
-      //   return next({
-        //     status: 400,
-        //     message: "Reservations must be made for a future date.",
-        //   });
-        // }
-        // if (
-          //   reserveDate.getTime() < start.getTime() ||
-          //   reserveDate.getTime() > end.getTimezoneOffset()
-          // ) {
-            //   return next({
-              //     status: 400,
-              //     message: "Reservations cannot be made before 10:30am or after 9:30pm.",
-              //   });
-              // }
-              if (data.reservation_time<"10:30"||data.reservation_time>"21:30"){
-                return next ({
-                  status:400,
-                  message:"reservation cannot be made before 10:30am or after 9:30pm."
-                })
-              }
-              next();
-            }
-            
-            
-            
-            
-            /*function dateChecker(date){
-  if (date)
+      message: "reservation_time is not a time.",
+    });
+  }
+
+  //is reserved time outside of business reservation hours
+  if (data.reservation_time<"10:30"||data.reservation_time>"21:30"){
+    return next ({
+      status:400,
+      message:"reservation cannot be made before 10:30am or after 9:30pm."
+    })
+  }
+  //if no errors move to the next middleware
+  next();
 }
-function timeChecker(time){
-  
-}*/
+
+//date past present helper function
 function isReservationPast(date) {
   const temp = date.split("-");
   const newDate = new Date(
@@ -174,11 +162,13 @@ function isReservationPast(date) {
     Number(temp[1]) - 1,
     Number(temp[2]) + 1
   );
-  // indexing for the months etc.
+
   return newDate.getTime() < new Date().getTime();
 } 
 
+//create service call
 async function create(request,response){
+  //construct full checked form with proper keys
   const newReservationObject={
     first_name:request.body.data.first_name,
     last_name:request.body.data.last_name,
@@ -187,32 +177,16 @@ async function create(request,response){
     mobile_number:request.body.data.mobile_number,
     people:request.body.data.people
   } 
+  //send object to reservation service to be added to the table
   const newReservationSuccess = await service.create(newReservationObject);
   response
   .status(201)
   .json({data: newReservationSuccess})
 }
 
-// async function list(request, response) {
-//   console.log("made it to the reservation controller...")
-//   if(request.query.date){
-//     const date=request.query.date
-//     const reservationsThisDate = await service.list({date})
-//     response
-//     .json({data:reservationsThisDate
-//     });
-//   }else if(request.query.mobile_phone)
-//   const mobile_number=request.query.mobile_number
-//   const reservationsThisPhone = await service.list({mobile_number})
-//   response
-//   .json({data:reservationsThisPhone
-//   });
-// }
-
-
-//uncorrupted prior to phone number query merge
+//Get a list of matching reservations from the table using date or mobile number
 async function list(request, response) {
-  console.log(request.query.date,request.query.mobile_number)
+  // console.log(request.query.date,request.query.mobile_number) //uncomment to check query
   const date=request.query.date
   const mobile_number=request.query.mobile_number
 
@@ -221,7 +195,7 @@ async function list(request, response) {
   });
 }
 
-
+//send found reservation back
 function read(request, response){
   const {reservationData}=response.locals
   response
@@ -229,16 +203,16 @@ function read(request, response){
   .json({data:reservationData})
 }
 
+//legit statuses in an array
 const realStatus=["booked","finished","cancelled","seated"]
 
+//check existence and legitimacy of status
 function statusCheck(request,response,next){
-  console.log("status check",request.body.data)
   if(!request.body.data.status){
     return next({status:400,message:"no status defined"})
   }
   const {status}=request.body.data
   response.locals.status=status
-  console.log("status check in update",status)
   if(!realStatus.includes(status)){
     return next({status:400,message:`${status} is unknown. It must be booked, seated, cancelled or finished`})
   }
@@ -246,53 +220,45 @@ function statusCheck(request,response,next){
   next()
 
 }
+
+//Make sure status is not finished
 function notFinished(request,response,next){
   if(response.locals.reservationData.status==="finished"){
-  console.log("failed on not finished",response.locals)
- return next({status:400,message:"The reservation is already finished"})
-}
+    return next({status:400,message:"The reservation is already finished"})
+  }
   return next()
-
-
 }
+
+//Make sure status is a legitimate option
 function statusCreateCheck(request,response,next){
-//   if(!request.body.data.status){
-// return next({status:400,message:"no status defined"})}
-const {status}=request.body.data
-// console.log("status check",status)
-if(status&&status!=="booked"){
-  return next({status:400,message:"Status must be booked, seated, cancelled or finished"})
-}
-next()
+  const {status}=request.body.data
+  if(status&&status!=="booked"){
+    return next({status:400,message:"Status must be booked, seated, cancelled or finished"})
+  }
+  next()
 }
 
-//perhaps check reservation existing status?
+//Check that reservation's existing status is currently booked
 function statusUpdateCheck(request,response,next){
-  //   if(!request.body.data.status){
-  // return next({status:400,message:"no status defined"})}
   const {status}=response.locals.reservationData
-  // console.log("status check",status)
   if(status!=="booked"){
     return next({status:400,message:"Status must be booked"})
   }
   next()
   }
 
-
+//update the reservation status in the reservations table
 async function updateStatus(request,response,next){
-  // console.log(updatedStatus,"updated status from knex service")
   const {status="booked"}=request.body.data
   const reservationID=request.params.reservation_id
   const updatedStatus= await service.updateResStatus(reservationID,status)
-  console.log("XXXXXX",updatedStatus)
   response
-  .status(200)
-  .json({data:updatedStatus})
-
+    .status(200)
+    .json({data:updatedStatus})
 }
 
+//update  the reservation table with updated information
 async function update(request,response,next){
-  const {data}=request.body
   const updatedReservation={
     ...response.locals.reservationData,
     first_name:request.body.data.first_name,
@@ -303,25 +269,29 @@ async function update(request,response,next){
     people:request.body.data.people
   }
   const updatedRes= await service.updateRes(response.locals.reservationData.reservation_id,updatedReservation)
-  console.log("XXXXXX",updatedRes)
   response
-  .status(200)
-  .json({data:updatedRes})
-
+    .status(200)
+    .json({data:updatedRes})
 }
 
-// async function deleteReservation(request, response,next){
-//   const resID=request.params.reservation_id//use url param for resID
-//   await service.deleteReservation(re)
-// }
-
+//export with array of middleware defined
 module.exports = {
   list:asyncErrorBoundary(list),
-  create:[validFormSubmission,
+  create:[
+    validFormSubmission,
     statusCreateCheck,
     asyncErrorBoundary(create)],
-  read:[asyncErrorBoundary(resExistsMidWare), read],
-  update:[asyncErrorBoundary(resExistsMidWare),validFormSubmission,statusUpdateCheck,asyncErrorBoundary(update)],
-  updateStatus:[asyncErrorBoundary(resExistsMidWare),statusCheck, notFinished, asyncErrorBoundary(updateStatus)],
-  // destroy:[asyncErrorBoundary(resExistsMidWare),asyncErrorBoundary( deleteReservation)]
+  read:[
+    asyncErrorBoundary(resExistsMidWare), 
+    read],
+  update:[
+    asyncErrorBoundary(resExistsMidWare),
+    validFormSubmission,
+    statusUpdateCheck,
+    asyncErrorBoundary(update)],
+  updateStatus:[
+    asyncErrorBoundary(resExistsMidWare),
+    statusCheck, 
+    notFinished, 
+    asyncErrorBoundary(updateStatus)],
 };
