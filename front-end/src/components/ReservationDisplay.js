@@ -1,12 +1,27 @@
 import React from "react"
 import{Link}from "react-router-dom"
-import cancelReservationHandler from "../utils/cancelReservationHandler"
+// import cancelReservationHandler from "../utils/cancelReservationHandler"
+import {reservationStatusUpdate} from "../utils/api"
 
 function ReservationDisplay(props){
     const {reservations,reservationRefresh,
     setReservationRefresh}=props
     const{first_name,last_name,mobile_number,reservation_time,people,status}=reservations
     
+    function cancelReservationHandler({target}){
+        if (window.confirm("Do you want to cancel this reservation? This cannot be undone.")) {
+        const resID =target.getAttribute("data-reservation-id")
+        // const reservationRefresh = target.getAttribute("data-refresher")
+        // const reservationRefreshCounter=target.getAttribute("data-refreshcount")
+        // console.log("attribute gotten",resID)
+        const abortController=new AbortController()
+        //no useEffect necessary for an onClick event API
+        reservationStatusUpdate(resID,"cancelled", abortController.signal)
+        .then(()=>setReservationRefresh(reservationRefresh+1))
+        // .catch(setDeleteErrors)
+        }
+    }
+
     function eachReservation(){
         return reservations.map((eachReservation)=>{
             const{first_name,last_name,mobile_number,reservation_time,people,status}=eachReservation
@@ -43,8 +58,8 @@ function ReservationDisplay(props){
                             type="button" 
                             data-reservation-id={eachReservation.reservation_id} 
                             data-reservation-id-cancel={eachReservation.reservation_id} 
-                            data-refresher={setReservationRefresh} 
-                            data-refreshCount={reservationRefresh} 
+                            // data-refresher={setReservationRefresh} 
+                            // data-refreshcount={reservationRefresh} 
                             onClick={cancelReservationHandler}
                             >
                             Cancel

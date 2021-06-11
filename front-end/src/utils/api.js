@@ -165,17 +165,26 @@ export async function listSpecReservations(params, signal) {
 
   export async function reservationStatusUpdate(reservationID,updateObject,signal){
     const url= `${API_BASE_URL}/reservations/${reservationID}/status`
-    const options={method:"put",reservation_id:reservationID,status:updateObject.status}
+    const options={
+      method:"PUT",
+      body:JSON.stringify({data:{reservation_id:reservationID,status:updateObject}}),
+      headers, 
+      signal
+    }
     return await fetchJson(url,options)
   }
 
   export async function updateReservation(reservationID,updateObject,signal) {
     const url = `${API_BASE_URL}/reservations/${reservationID}`;
-    console.log(url.toString(),"url")
+    console.log(url.toString(),"url constructed in API")
+    console.log("the info sent to data: value",updateObject)
+    console.log("what it looks like spread into data",
+    {data:{...updateObject}}
+    )
     const options = {
       method: "PUT",
       headers,
-      body: JSON.stringify({ data: { updateObject } }),
+      body: JSON.stringify({ data: { ...updateObject } }),
       signal,
     };
     return await fetchJson(url, options);

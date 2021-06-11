@@ -2,10 +2,17 @@ import React, {useEffect, useState} from "react"
 import {Link,useHistory} from "react-router-dom"
 import {createReservation, readReservation, updateReservation } from "../utils/api"
 import{today} from "../utils/date-time"
+// import { formatAsDate } from "../utils/date-time";
+import formatReservationDate from "../utils/format-reservation-date"
 import ErrorAlert from "../layout/ErrorAlert"
 
+// import formatReservationDate from "../utils/format-reservation-date"
+
 function ReservationNewComponent({loadDashboard, date,editState,
-        setEditState}){
+        setEditState,
+        reservationRefresh,
+        setReservationRefresh
+}){
         const blankForm={ //initialized empty form
                 first_name:'',
                 last_name:'',
@@ -14,32 +21,65 @@ function ReservationNewComponent({loadDashboard, date,editState,
                 reservation_time:'',
                 people:0
         }
-
+        const [tempState,setTempState]=useState(null)
+        // let formed="woop"
+        const [formState, setFormState]=useState(
+                // formed==="woop"?
+                // editState?formAlready:
+                blankForm
+                // :formed
+                ) //for form values
         
-        const history=useHistory() //for links 
-        const [formState, setFormState]=useState(editState?formAlready:blankForm) //for form values
-        const [errorCollector, setErrorCollector]=useState(null)//for front end validation
-        const todayDateObject=today() //defaults to today (used in 2 helper functions )
         const [resToEdit,setResToEdit]=useState(null)
-        
+
         useEffect(grabEditRes,[editState])
         function grabEditRes(){
+                if (editState){
                 setErrorCollector(null)
                 const signal=new AbortController().signal
-                readReservation(editState,signal)
-                .then(setResToEdit)
-        }
-        let formAlready={}
-        if(resToEdit){
-                formAlready={
-                first_name:resToEdit.first_name,
-                last_name:resToEdit.last_name,
-                reservation_time:resToEdit.reservation_time,
-                reservation_date:resToEdit.reservation_date,
-                mobile_number:resToEdit.mobile_number,
-                people:resToEdit.people
+                return readReservation(editState,signal)
+                // .then(setFormState)
+                // .then((x)=>console.log(x,"Result of read reservation"))
+                // .then((y)=>console.log(y.reservation_date,"reservation date"))
+                // .then((z)=>  ({...z,reservation_date:formatReservationDate([z])}))
+
+                .then((x)=>{const d = new Date(x.reservation_date)
+                        const month = d.getMonth() + 1
+                        const day = d.getDate()
+                        const year = d.getFullYear()
+                        const dateString=(  year + '-' + 
+                          (month < 10 ? '0' + month : month) + '-' + 
+                          (day < 10 ? '0'+day : day)
+                        );setFormState({...x,reservation_date:dateString})})
                 }
         }
+
+//         useEffect(dateStrung,[])
+//         const d = new Date(formState.reservation_date)
+// const month = d.getMonth() + 1
+// const day = d.getDate()
+// const year = d.getFullYear()
+// dateString=
+//   year + '-' + 
+//   (month < 10 ? '0' + month : month) + '-' + 
+//   (day < 10 ? '0'+day : day)
+
+
+        // if(resToEdit){
+        //         setFormState({
+        //         first_name:resToEdit.first_name,
+        //         last_name:resToEdit.last_name,
+        //         reservation_time:resToEdit.reservation_time,
+        //         reservation_date:resToEdit.reservation_date,
+        //         mobile_number:resToEdit.mobile_number,
+        //         people:resToEdit.people
+        //         })
+        // }
+        
+        const history=useHistory() //for links 
+        const [errorCollector, setErrorCollector]=useState(null)//for front end validation
+        const todayDateObject=today() //defaults to today (used in 2 helper functions )
+        
 
         function dateCheck(){
                 const dateErrors=[] //error holder
@@ -94,7 +134,7 @@ function handleSubmit(event){
                 //API post
                 if(timeCheck()){
                         createReservation(formState,signal) //actual API call via imported Util
-                        .then(()=>loadDashboard())
+                        .then(()=>setReservationRefresh(reservationRefresh+1))
                         .then(()=> history.push(`/dashboard?date=${formState.reservation_date}`))//send user to reservation date URL)
                         .catch(setErrorCollector)
                 //eventually API update
@@ -107,13 +147,17 @@ function handleSubmit(event){
 function handleUpdate(event){
         event.preventDefault() //submission default prevention
         setErrorCollector(null)
+        console.log("sending an update to api")
+        console.log("the edit state",editState)
+        console.log("the formState before API send",formState)
     const signal=new AbortController().signal //create an abort controller instance signal 
         //check form's date submission locally on front end first
         if (dateCheck()){//if no errors then true
                 //API post
                 if(timeCheck()){
                         updateReservation(editState,formState,signal) //actual API call via imported Util
-                        .then(()=>loadDashboard())
+                        .then(()=>setReservationRefresh(reservationRefresh+1))
+                        // .then((x)=>)
                         .then(()=> history.push(`/dashboard?date=${formState.reservation_date}`))//send user to reservation date URL)
                         .catch(setErrorCollector)
                 //eventually API update
@@ -125,7 +169,7 @@ function handleUpdate(event){
 }
 
 function cancelClick(event){
-        setEditState(null); 
+        // setEditState(null); 
         history.goBack()
 }
 
@@ -219,7 +263,7 @@ function changeHandler({target}){
         />
         <br />
         <button type="submit" value="Submit" >Submit</button>
-        <button type="button" onClick={cancelClick} >Cancel</button>
+        <button type="button" onClick={cancelClick} >cancel</button>
     </form></div>
     )
 }

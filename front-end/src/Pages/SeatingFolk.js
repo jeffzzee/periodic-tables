@@ -153,7 +153,7 @@ function SeatingFolk(props){
                     value={tableID}//state holder
                     defaultValue={tableID}
                      onChange={handleChange}
-                     placeHolder="select"
+                     placeholder="select"
                      >
                          <option 
                          default

@@ -71,6 +71,7 @@ describe("US-08 - Change an existing reservation - E2E", () => {
     });
     describe("clicking the reservation cancel button", () => {
       test("then clicking OK removes the reservation", async () => {
+        console.log("test 1 failure step 1")
         await page.screenshot({
           path: ".screenshots/us-08-cancel-reservation-before.png",
           fullPage: true,
@@ -90,18 +91,21 @@ describe("US-08 - Change an existing reservation - E2E", () => {
           expect(dialog.message()).toContain(
             "Do you want to cancel this reservation?"
           );
+          console.log("test 1 failure step 2")
           await dialog.accept();
         });
-
+        console.log("test 1 failure step 3")
         await cancelButton.click();
 
         await page.waitForResponse((response) => {
           return response.url().includes("/reservations?date=");
         });
-
+        console.log("test 1 failure step 4")
         await page.waitForTimeout(500);
 
-        expect(await page.$(cancelButtonSelector)).toBeNull();
+        console.log("test 1 failure step 5")
+        expect(
+          await page.$(cancelButtonSelector)).toBeNull();
       });
       test("then clicking cancel makes no changes", async () => {
         await page.screenshot({

@@ -10,6 +10,7 @@ import ReservationNewComponent from "../pages/ReservationNewComponent";
 import SeatingFolk from "../pages/SeatingFolk"
 import SearchTables from "../pages/Search"
 import TableNew from "../pages/TableNew"
+import ReservationEdit from "../pages/ReservationEdit"
 
 /**
  * Defines all the routes for the application.
@@ -27,7 +28,7 @@ function Routes() {
   const [tablesError, setTablesError]=useState(null)
   const [newTableAddState,setNewTableAddState] = useState(0)
   const [reservationRefresh,setReservationRefresh]=useState(0)
-  const [editState,setEditState]=useState(null)//use for edit res target
+  
   const history = useHistory()
   
 //reservations come back as an array, so can be mapped
@@ -69,6 +70,8 @@ function Routes() {
         loadDashboard={loadDashboard}
         // editState={editState}//by not sending to this route it shouldn't be available...
         // setEditState={setEditState}//
+        reservationRefresh={reservationRefresh}
+        setReservationRefresh={setReservationRefresh}
         />  
       </Route>
       <Route path="/reservations/:reservation_id/seat">
@@ -82,8 +85,6 @@ function Routes() {
       </Route>
       <Route path="/reservations/:reservation_id/edit">
         <ReservationEdit tables={tables} 
-        editState={editState}
-        setEditState={setEditState}
         reservations={reservations}
         newTableAddState={newTableAddState}
         setNewTableAddState={setNewTableAddState}
@@ -124,6 +125,7 @@ function Routes() {
         loadDashboard={loadDashboard}
         newTableAddState={newTableAddState}
         setNewTableAddState={setNewTableAddState}
+        
         />
       </Route>
       <Route>

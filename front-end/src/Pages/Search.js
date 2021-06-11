@@ -3,7 +3,8 @@ import {listSpecReservations} from "../utils/api"
 import {useParams,useHistory,Link} from "react-router-dom"
 import ErrorAlert from "../layout/ErrorAlert"
 import SearchForm from "./SearchForm"
-import cancelReservationHandler from "../utils/cancelReservationHandler"
+// import cancelReservationHandler from "../utils/cancelReservationHandler"
+import {reservationStatusUpdate} from "../utils/api"
 
 function SearchTables(props){
 const{
@@ -43,6 +44,19 @@ function searchTableGetter(event){
 //     event.preventDefault()
 
 // }
+}
+function cancelReservationHandler({target}){
+    if (window.confirm("Do you want to cancel this reservation? This cannot be undone.")) {
+    const resID =target.getAttribute("data-reservation-id")
+    // const reservationRefresh = target.getAttribute("data-refresher")
+    // const reservationRefreshCounter=target.getAttribute("data-refreshcount")
+    // console.log("attribute gotten",resID)
+    const abortController=new AbortController()
+    //no useEffect necessary for an onClick event API
+    reservationStatusUpdate(resID,"cancelled", abortController.signal)
+    .then(()=>setReservationRefresh(reservationRefresh+1))
+    // .catch(setDeleteErrors)
+    }
 }
 
 function eachFoundReservation(){
@@ -105,8 +119,8 @@ function eachFoundReservation(){
                                     <button 
                                     type="button" 
                                     data-reservation-id={eachReservation.reservation_id} 
-                                    data-refresher={setReservationRefresh} 
-                                    data-refreshCount={reservationRefresh}
+                                    // data-refresher={setReservationRefresh} 
+                                    // data-refreshcount={reservationRefresh}
                                     data-reservation-id-cancel={eachReservation.reservation_id} 
                                     onClick={cancelReservationHandler}
                                     >

@@ -61,7 +61,9 @@ describe("US-01 - Create and list reservations - E2E", () => {
     });
 
     test("canceling form returns to previous page", async () => {
+      console.log("1")
       await page.goto(`${baseURL}/dashboard`, { waitUntil: "networkidle0" });
+      console.log("2")
       await page.goto(`${baseURL}/reservations/new`, {
         waitUntil: "networkidle0",
       });
@@ -73,17 +75,17 @@ describe("US-01 - Create and list reservations - E2E", () => {
       if (!cancelButton) {
         throw new Error("button containing cancel not found.");
       }
-
+      console.log("3")
       await page.screenshot({
         path: ".screenshots/us-01-cancel-before.png",
         fullPage: true,
       });
-
+      console.log("4")
       await Promise.all([
         cancelButton.click(),
         page.waitForNavigation({ waitUntil: "networkidle0" }),
       ]);
-
+      console.log("5")
       await page.screenshot({
         path: ".screenshots/us-01-cancel-after.png",
         fullPage: true,
